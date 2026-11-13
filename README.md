@@ -1,6 +1,6 @@
 # Project 17: Property Rental Listings
-**Author / Student Name:** `Zulqarnain Bhatti`  
-**Folder Name:** `zulqarnain bhatti`  
+**Author / Students Name:** `Zulqarnain Bhatti`,syed abdullah shah,shahroz ali  
+**Folder Name:** `my first website`  
 **Degree Program:** BS Computer Science (BS CS)  
 **Course:** Database Systems Semester Project  
 **Technology Stack:** HTML5, CSS3, JavaScript (Vanilla ES6+), Tailwind CSS (CDN), Chart.js, Relational In-Browser Store (`localStorage`), MySQL 8.0 DDL  
