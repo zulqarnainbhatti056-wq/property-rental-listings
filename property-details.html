@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Property Details | LuxeHaven Rentals - Zulqarnain Bhatti</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Custom Real Estate Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-[#0b0f17] text-slate-100 flex flex-col min-h-screen">
+
+  <!-- Universal Top Navigation -->
+  <div id="navbar-placeholder"></div>
+
+  <!-- Breadcrumb & Top Bar -->
+  <div class="border-b border-slate-800 bg-slate-900/40 py-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between text-xs text-slate-400">
+      <div class="flex items-center gap-2">
+        <a href="index.html" class="hover:text-emerald-400">Home</a>
+        <span>/</span>
+        <a href="properties.html" class="hover:text-emerald-400">Properties</a>
+        <span>/</span>
+        <span id="breadcrumb-title" class="text-white font-medium truncate max-w-xs sm:max-w-md">Loading...</span>
+      </div>
+      <a href="properties.html" class="text-emerald-400 hover:underline flex items-center gap-1 font-semibold">
+        ← Back to Search
+      </a>
+    </div>
+  </div>
+
+  <!-- Main Property Overview -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full flex-1 space-y-10">
+    
+    <!-- Top Gallery & Hero Details -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- Photo Showcase (7 Cols) -->
+      <div class="lg:col-span-7 space-y-4">
+        <div class="relative rounded-2xl overflow-hidden border border-slate-800 aspect-[16/10] bg-slate-900 group">
+          <img id="detail-main-img" src="" alt="Property" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+          <div class="absolute top-4 left-4 flex gap-2">
+            <span id="detail-type-badge" class="badge badge-type">House</span>
+            <span id="detail-status-badge" class="badge badge-available">Available</span>
+          </div>
+          <div class="absolute bottom-4 left-4">
+            <div id="detail-price-pill" class="price-pill text-xl">Rs. 0 / mo</div>
+          </div>
+        </div>
+
+        <!-- Thumbnails -->
+        <div class="grid grid-cols-4 gap-3">
+          <img id="thumb-1" src="" onclick="switchImage(this.src)" class="rounded-xl border border-emerald-500/50 aspect-video object-cover cursor-pointer hover:opacity-80 transition-opacity">
+          <img id="thumb-2" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format&fit=crop&q=80" onclick="switchImage(this.src)" class="rounded-xl border border-slate-800 aspect-video object-cover cursor-pointer hover:opacity-80 transition-opacity">
+          <img id="thumb-3" src="https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?w=600&auto=format&fit=crop&q=80" onclick="switchImage(this.src)" class="rounded-xl border border-slate-800 aspect-video object-cover cursor-pointer hover:opacity-80 transition-opacity">
+          <img id="thumb-4" src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=600&auto=format&fit=crop&q=80" onclick="switchImage(this.src)" class="rounded-xl border border-slate-800 aspect-video object-cover cursor-pointer hover:opacity-80 transition-opacity">
+        </div>
+      </div>
+
+      <!-- Quick Booking Action Box (5 Cols) -->
+      <div class="lg:col-span-5 space-y-6">
+        <div class="glass-panel p-6 sm:p-8 space-y-6">
+          <div>
+            <div class="text-xs font-semibold text-emerald-400 font-mono mb-1 flex items-center gap-1.5" id="detail-location-header">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+              Islamabad
+            </div>
+            <h1 id="detail-title" class="text-2xl sm:text-3xl font-black text-white leading-tight">Property Title</h1>
+            <p class="text-xs text-slate-400 mt-2" id="detail-listing-id">Property ID: #PRP-001</p>
+          </div>
+
+          <!-- Quick Metrics Bar -->
+          <div class="grid grid-cols-3 gap-2 py-4 border-y border-slate-800 text-center font-mono">
+            <div class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800/80">
+              <span class="text-[10px] text-slate-400 uppercase block">Bedrooms</span>
+              <strong id="detail-beds" class="text-base text-white">4 Beds</strong>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800/80">
+              <span class="text-[10px] text-slate-400 uppercase block">Bathrooms</span>
+              <strong id="detail-baths" class="text-base text-white">5 Baths</strong>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800/80">
+              <span class="text-[10px] text-slate-400 uppercase block">Covered Area</span>
+              <strong id="detail-sqft" class="text-base text-white">3,200 sqft</strong>
+            </div>
+          </div>
+
+          <!-- Schedule Visit Call to Action -->
+          <div id="booking-cta-container">
+            <a id="schedule-visit-btn" href="#" class="w-full btn-primary text-sm py-3.5 flex items-center justify-center gap-2 font-bold shadow-lg shadow-emerald-600/30">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+              Schedule a Physical Visit
+            </a>
+            <p class="text-[11px] text-slate-400 text-center mt-2">
+              Free booking • Owner receives instant visit request
+            </p>
+          </div>
+
+          <!-- Landlord Profile Card -->
+          <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center gap-3">
+            <img id="detail-owner-avatar" src="" alt="Owner" class="w-12 h-12 rounded-xl object-cover border border-slate-700">
+            <div class="flex-1">
+              <div class="text-[10px] font-mono text-emerald-400 font-bold uppercase">Verified Property Owner</div>
+              <div id="detail-owner-name" class="text-sm font-bold text-white">Owner Name</div>
+              <div id="detail-owner-contact" class="text-xs text-slate-400 font-mono">+92 300 0000000</div>
+            </div>
+            <span class="badge bg-emerald-500/10 text-emerald-300 text-[10px]">Verified</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Description & Amenities Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <!-- Left: Full Description & Specs (8 Cols) -->
+      <div class="lg:col-span-8 space-y-8">
+        
+        <!-- Detailed Text -->
+        <div class="glass-panel p-6 sm:p-8 space-y-4">
+          <h2 class="text-xl font-bold text-white">About this Property</h2>
+          <p id="detail-desc" class="text-sm text-slate-300 leading-relaxed">
+            Loading property description...
+          </p>
+
+          <h3 class="text-base font-bold text-white pt-4">Key Features & Building Highlights</h3>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs text-slate-300 font-medium">
+            <div class="flex items-center gap-2 p-2.5 rounded-lg bg-slate-900 border border-slate-800">
+              <span class="text-emerald-400 font-bold">✓</span> Italian Marble Flooring
+            </div>
+            <div class="flex items-center gap-2 p-2.5 rounded-lg bg-slate-900 border border-slate-800">
+              <span class="text-emerald-400 font-bold">✓</span> Standby Solar Power Setup
+            </div>
+            <div class="flex items-center gap-2 p-2.5 rounded-lg bg-slate-900 border border-slate-800">
+              <span class="text-emerald-400 font-bold">✓</span> Reserved Covered Car Porch
+            </div>
+            <div class="flex items-center gap-2 p-2.5 rounded-lg bg-slate-900 border border-slate-800">
+              <span class="text-emerald-400 font-bold">✓</span> 24/7 Gated Security Guard
+            </div>
+            <div class="flex items-center gap-2 p-2.5 rounded-lg bg-slate-900 border border-slate-800">
+              <span class="text-emerald-400 font-bold">✓</span> Dedicated Gas & Electric Meters
+            </div>
+            <div class="flex items-center gap-2 p-2.5 rounded-lg bg-slate-900 border border-slate-800">
+              <span class="text-emerald-400 font-bold">✓</span> Servants Quarter with Bath
+            </div>
+          </div>
+        </div>
+
+        <!-- Neighborhood & Distance Highlights -->
+        <div class="glass-panel p-6 sm:p-8 space-y-4">
+          <h2 class="text-xl font-bold text-white">Location & Vicinity Highlights</h2>
+          <p class="text-xs text-slate-400">Conveniently positioned close to leading schools, hospitals, and transit hubs.</p>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-mono">
+            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+              <span class="text-slate-500 block uppercase text-[10px]">Commercial Market</span>
+              <strong class="text-white block mt-1">2 Mins Drive</strong>
+              <span class="text-[11px] text-emerald-400">Walking distance to grocery</span>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+              <span class="text-slate-500 block uppercase text-[10px]">Healthcare & Hospital</span>
+              <strong class="text-white block mt-1">5 Mins Drive</strong>
+              <span class="text-[11px] text-emerald-400">Shifa / Maroof Clinic</span>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800">
+              <span class="text-slate-500 block uppercase text-[10px]">Airport / Expressway</span>
+              <strong class="text-white block mt-1">20 Mins Drive</strong>
+              <span class="text-[11px] text-emerald-400">Direct signal-free corridor</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right: Relational Database Rule Showcase Card (4 Cols) -->
+      <div class="lg:col-span-4 space-y-6">
+        <div class="glass-panel p-6 space-y-4 border-emerald-500/30">
+          <div class="text-[10px] font-mono font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            Relational Business Rules Verified
+          </div>
+          <h3 class="text-base font-bold text-white">Project 17 Constraints</h3>
+          <ul class="text-xs text-slate-300 space-y-3">
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-400 font-bold">1.</span>
+              <span><strong>Search Visibility:</strong> Rented properties are automatically hidden from search results.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-400 font-bold">2.</span>
+              <span><strong>No Past Visits:</strong> Scheduled date cannot be prior to current local time.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-400 font-bold">3.</span>
+              <span><strong>Anti-Spam Restriction:</strong> Same tenant cannot book the same property twice on identical date.</span>
+            </li>
+          </ul>
+
+          <div class="pt-3 border-t border-slate-800">
+            <a href="admin-areas.html" class="text-xs text-emerald-400 hover:underline font-semibold flex items-center gap-1">
+              Audit in 8 SQL Queries →
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Universal Footer -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Scripts -->
+  <script src="js/db.js"></script>
+  <script src="js/nav.js"></script>
+  <script>
+    function switchImage(src) {
+      document.getElementById("detail-main-img").src = src;
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const propId = urlParams.get("id") || 1;
+
+      const prop = window.PropertyDB.getPropertyById(propId);
+      if (!prop) {
+        alert("Property listing not found.");
+        window.location.href = "properties.html";
+        return;
+      }
+
+      // Populate Elements
+      document.getElementById("breadcrumb-title").textContent = prop.title;
+      document.getElementById("detail-title").textContent = prop.title;
+      document.getElementById("detail-listing-id").textContent = `Property ID: #PRP-00${prop.property_id} • Created: ${prop.created_at}`;
+      document.getElementById("detail-desc").textContent = prop.description;
+
+      document.getElementById("detail-main-img").src = prop.image;
+      document.getElementById("thumb-1").src = prop.image;
+
+      document.getElementById("detail-type-badge").textContent = prop.type;
+      document.getElementById("detail-price-pill").innerHTML = `${window.formatCurrency(prop.monthly_rent)}<span class="text-xs text-slate-300 font-normal"> / mo</span>`;
+      document.getElementById("detail-location-header").innerHTML = `
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+        ${prop.area_name}, ${prop.city}
+      `;
+
+      document.getElementById("detail-beds").textContent = `${prop.bedrooms} Beds`;
+      document.getElementById("detail-baths").textContent = `${prop.bathrooms} Baths`;
+      document.getElementById("detail-sqft").textContent = `${Number(prop.size_sqft).toLocaleString()} sqft`;
+
+      // Status badge & booking button
+      const statusBadge = document.getElementById("detail-status-badge");
+      const ctaBtn = document.getElementById("schedule-visit-btn");
+      if (prop.status === 'Rented') {
+        statusBadge.className = "badge badge-rented";
+        statusBadge.textContent = "Rented Out";
+        ctaBtn.className = "w-full btn-secondary text-sm py-3.5 flex items-center justify-center gap-2 font-bold opacity-60 cursor-not-allowed";
+        ctaBtn.removeAttribute("href");
+        ctaBtn.textContent = "🔒 Property Currently Rented";
+      } else {
+        statusBadge.className = "badge badge-available";
+        statusBadge.textContent = "Available for Rent";
+        ctaBtn.href = `request-visit.html?id=${prop.property_id}`;
+      }
+
+      // Owner info
+      document.getElementById("detail-owner-name").textContent = prop.owner_name;
+      document.getElementById("detail-owner-contact").textContent = `${prop.owner_phone} • ${prop.owner_email}`;
+      const ownerObj = window.PropertyDB.getData().owners.find(o => o.owner_id === prop.owner_id);
+      if (ownerObj && ownerObj.avatar) {
+        document.getElementById("detail-owner-avatar").src = ownerObj.avatar;
+      }
+    });
+  </script>
+</body>
+</html>

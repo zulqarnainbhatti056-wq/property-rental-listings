@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Visit Requests | LuxeHaven Rentals - Zulqarnain Bhatti</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Custom Real Estate Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-[#0b0f17] text-slate-100 flex flex-col min-h-screen">
+
+  <!-- Universal Top Navigation -->
+  <div id="navbar-placeholder"></div>
+
+  <!-- Header Banner -->
+  <div class="border-b border-slate-800 bg-slate-900/40 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <div class="inline-flex items-center gap-2 text-xs font-semibold text-emerald-400 font-mono uppercase tracking-wider mb-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          Tenant Portal • Visit Requests Tracking
+        </div>
+        <h1 class="text-3xl font-black text-white">My Scheduled Property Visits</h1>
+        <p class="text-sm text-slate-400 mt-1">
+          Review visit approvals, confirmed time slots, and landlord contact details.
+        </p>
+      </div>
+
+      <!-- Quick Action: Browse more properties -->
+      <a href="properties.html" class="btn-primary text-xs py-2.5 px-4 font-bold flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        Browse More Rentals
+      </a>
+    </div>
+  </div>
+
+  <!-- Main Content Layout -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full flex-1 space-y-6">
+    
+    <!-- Filter Toolbar -->
+    <div class="glass-panel p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      
+      <!-- Status Filter Tabs -->
+      <div class="flex items-center gap-2 w-full sm:w-auto overflow-x-auto">
+        <button onclick="setFilterStatus('All')" class="status-tab-btn active px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white" data-status="All">
+          All Requests (<span id="count-all">0</span>)
+        </button>
+        <button onclick="setFilterStatus('Pending')" class="status-tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:text-white" data-status="Pending">
+          🟡 Pending (<span id="count-pending">0</span>)
+        </button>
+        <button onclick="setFilterStatus('Accepted')" class="status-tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:text-white" data-status="Accepted">
+          🟢 Confirmed (<span id="count-accepted">0</span>)
+        </button>
+        <button onclick="setFilterStatus('Declined')" class="status-tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:text-white" data-status="Declined">
+          🔴 Declined (<span id="count-declined">0</span>)
+        </button>
+      </div>
+
+      <!-- Tenant Filter -->
+      <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+        <label class="text-xs text-slate-400 font-semibold font-mono">Viewing As:</label>
+        <select id="tenant-filter-select" onchange="renderRequests()" class="form-input text-xs font-semibold !py-1.5 !px-3 w-48">
+          <option value="All">All Tenants (Debug)</option>
+          <!-- Populated via JS -->
+        </select>
+      </div>
+
+    </div>
+
+    <!-- Requests Grid / Cards List -->
+    <div id="requests-list-container" class="space-y-4">
+      <!-- Injected via JS -->
+    </div>
+
+    <!-- Empty State -->
+    <div id="no-requests-box" class="hidden text-center py-16 quiz-card p-8">
+      <div class="w-16 h-16 rounded-2xl bg-slate-800 text-3xl flex items-center justify-center mx-auto mb-4">📅</div>
+      <h3 class="text-lg font-bold text-white mb-1">No visit requests found</h3>
+      <p class="text-xs text-slate-400 mb-6">You have not scheduled any visits matching this filter.</p>
+      <a href="properties.html" class="btn-primary text-xs">Explore Available Rentals</a>
+    </div>
+
+  </main>
+
+  <!-- Universal Footer -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Scripts -->
+  <script src="js/db.js"></script>
+  <script src="js/nav.js"></script>
+  <script>
+    let activeStatus = "All";
+
+    function populateTenantSelect() {
+      const tenants = window.PropertyDB.getData().tenants;
+      const select = document.getElementById("tenant-filter-select");
+      const activeUser = window.PropertyDB.getActiveUser();
+
+      tenants.forEach(t => {
+        const opt = document.createElement("option");
+        opt.value = t.tenant_id;
+        opt.textContent = `${t.name} (${t.email})`;
+        if (activeUser.id === t.tenant_id) opt.selected = true;
+        select.appendChild(opt);
+      });
+
+      renderRequests();
+    }
+
+    function setFilterStatus(status) {
+      activeStatus = status;
+      document.querySelectorAll(".status-tab-btn").forEach(btn => {
+        if (btn.getAttribute("data-status") === status) {
+          btn.className = "status-tab-btn active px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white";
+        } else {
+          btn.className = "status-tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:text-white";
+        }
+      });
+      renderRequests();
+    }
+
+    function renderRequests() {
+      const selectedTenantId = document.getElementById("tenant-filter-select").value;
+      const filters = {};
+      if (selectedTenantId !== "All") filters.tenant_id = selectedTenantId;
+      if (activeStatus !== "All") filters.status = activeStatus;
+
+      const allForTenant = window.PropertyDB.getVisitRequests(selectedTenantId !== "All" ? { tenant_id: selectedTenantId } : {});
+      
+      // Update counts
+      document.getElementById("count-all").textContent = allForTenant.length;
+      document.getElementById("count-pending").textContent = allForTenant.filter(r => r.status === 'Pending').length;
+      document.getElementById("count-accepted").textContent = allForTenant.filter(r => r.status === 'Accepted').length;
+      document.getElementById("count-declined").textContent = allForTenant.filter(r => r.status === 'Declined').length;
+
+      const requests = window.PropertyDB.getVisitRequests(filters);
+      const container = document.getElementById("requests-list-container");
+      const emptyBox = document.getElementById("no-requests-box");
+
+      if (requests.length === 0) {
+        container.innerHTML = "";
+        emptyBox.classList.remove("hidden");
+        return;
+      }
+
+      emptyBox.classList.add("hidden");
+      container.innerHTML = requests.map(r => {
+        let badgeClass = "badge-pending";
+        let statusTitle = "Awaiting Owner Confirmation";
+        if (r.status === 'Accepted') {
+          badgeClass = "badge-accepted";
+          statusTitle = "✓ Visit Confirmed by Landlord";
+        } else if (r.status === 'Declined') {
+          badgeClass = "badge-declined";
+          statusTitle = "✕ Slot Unavailable / Reschedule Required";
+        }
+
+        const formattedDate = new Date(r.visit_date).toLocaleDateString(undefined, {
+          weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'
+        });
+
+        return `
+          <div class="estate-card p-5 sm:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div class="flex items-start gap-4">
+              <img src="${r.property_image}" alt="Property" class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover border border-slate-800 shrink-0">
+              <div class="space-y-1">
+                <div class="flex items-center gap-2">
+                  <span class="badge ${badgeClass} text-[10px]">${r.status}</span>
+                  <span class="text-xs text-slate-500 font-mono">#REQ-00${r.request_id}</span>
+                </div>
+                <h3 class="text-base font-bold text-white hover:text-emerald-400 transition-colors">
+                  <a href="property-details.html?id=${r.property_id}">${r.property_title}</a>
+                </h3>
+                <div class="text-xs text-emerald-400 font-medium">
+                  📍 ${r.area_name}, ${r.city} • ${window.formatCurrency(r.property_rent)} / mo
+                </div>
+                <div class="text-xs text-slate-300 font-mono pt-1">
+                  📅 Visit: <strong class="text-white">${formattedDate}</strong> at <strong class="text-emerald-300">${r.time_slot}</strong>
+                </div>
+                ${r.notes ? `<p class="text-[11px] text-slate-400 italic mt-1">Note: "${r.notes}"</p>` : ''}
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:items-end gap-2 w-full md:w-auto border-t md:border-t-0 pt-3 md:pt-0 border-slate-800">
+              <div class="text-[11px] text-slate-400 text-left sm:text-right">
+                <span class="text-slate-500 block uppercase text-[10px]">Landlord</span>
+                <strong class="text-white">${r.owner_name}</strong>
+                <span class="block text-slate-400 font-mono">${r.tenant_phone}</span>
+              </div>
+
+              <div class="flex items-center gap-2 mt-2">
+                <a href="property-details.html?id=${r.property_id}" class="btn-secondary text-xs py-1.5 px-3">
+                  View Property
+                </a>
+                ${r.status === 'Pending' ? `
+                  <button onclick="cancelRequest(${r.request_id})" class="btn-danger text-xs py-1.5 px-3">
+                    Cancel Request
+                  </button>
+                ` : `
+                  <a href="request-visit.html?id=${r.property_id}" class="btn-primary text-xs py-1.5 px-3">
+                    Book Another Slot
+                  </a>
+                `}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function cancelRequest(id) {
+      if (confirm("Are you sure you want to cancel this visit request?")) {
+        window.PropertyDB.cancelVisitRequest(id);
+        window.showToast("Visit request cancelled.");
+        renderRequests();
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", populateTenantSelect);
+  </script>
+</body>
+</html>

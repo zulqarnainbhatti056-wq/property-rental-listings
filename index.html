@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LuxeHaven Rentals | Modern Property Rental Listings Portal</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Custom Real Estate Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            emerald: {
+              400: '#34d399',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#0b0f17] text-slate-100 flex flex-col min-h-screen">
+
+  <!-- Dynamic Universal Top Navigation -->
+  <div id="navbar-placeholder"></div>
+
+  <!-- Hero Section with Ambient Glows -->
+  <header class="relative overflow-hidden pt-12 pb-24 border-b border-slate-800/80">
+    <!-- Ambient Blur Background Accents -->
+    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[380px] bg-emerald-600/15 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute top-1/3 right-10 w-[350px] h-[300px] bg-teal-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      
+      <!-- Project Metadata Tag -->
+      <div class="flex justify-center mb-6">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/90 border border-slate-700/80 text-xs text-slate-300 shadow-inner">
+          <span class="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="font-bold text-white">Project 17: Property Rental Listings</span>
+          <span class="text-slate-500">•</span>
+          <span class="text-emerald-400 font-mono font-semibold">Author: Zulqarnain Bhatti</span>
+        </div>
+      </div>
+
+      <!-- Main Headline -->
+      <div class="text-center max-w-4xl mx-auto">
+        <h1 class="text-4xl sm:text-6xl font-black tracking-tight text-white leading-tight mb-6">
+          Find Your Perfect Home <br class="hidden sm:inline">
+          <span class="bg-gradient-to-r from-emerald-400 via-teal-300 to-amber-300 bg-clip-text text-transparent">
+            Houses, Luxury Flats & Portions
+          </span> for Rent
+        </h1>
+        <p class="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl mx-auto mb-10">
+          Discover verified rental properties across Islamabad, Lahore, Karachi, and Rawalpindi. Schedule physical visits directly with verified owners with instant confirmation.
+        </p>
+
+        <!-- Quick Interactive Search Hero Box -->
+        <div class="glass-panel p-4 sm:p-5 max-w-4xl mx-auto shadow-2xl border-emerald-500/20 text-left">
+          <form onsubmit="handleHeroSearch(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-center">
+            
+            <!-- City Selection -->
+            <div>
+              <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">Location / City</label>
+              <select id="hero-city-select" class="form-input text-xs font-semibold">
+                <option value="All">All Cities</option>
+                <option value="Islamabad" selected>Islamabad</option>
+                <option value="Lahore">Lahore</option>
+                <option value="Karachi">Karachi</option>
+                <option value="Rawalpindi">Rawalpindi</option>
+              </select>
+            </div>
+
+            <!-- Property Type -->
+            <div>
+              <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">Property Type</label>
+              <select id="hero-type-select" class="form-input text-xs font-semibold">
+                <option value="All">All Types (House, Flat, Portion)</option>
+                <option value="House">House / Luxury Villa</option>
+                <option value="Flat">Modern Flat / Penthouse</option>
+                <option value="Portion">Upper / Lower Portion</option>
+              </select>
+            </div>
+
+            <!-- Bedrooms -->
+            <div>
+              <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">Bedrooms</label>
+              <select id="hero-beds-select" class="form-input text-xs font-semibold">
+                <option value="All">Any Bedrooms</option>
+                <option value="2">2+ Bedrooms</option>
+                <option value="3" selected>3+ Bedrooms</option>
+                <option value="4">4+ Bedrooms</option>
+                <option value="5">5+ Luxury Mansion</option>
+              </select>
+            </div>
+
+            <!-- Submit CTA -->
+            <div class="pt-2 sm:pt-4">
+              <button type="submit" class="w-full btn-primary text-xs py-3 px-4 font-bold flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                Find Rentals
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+        <!-- Quick Stats Counters -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-12 max-w-4xl mx-auto">
+          <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 text-center">
+            <div class="text-2xl sm:text-3xl font-black text-emerald-400 font-mono" id="stat-total-props">10+</div>
+            <div class="text-xs font-bold uppercase tracking-wider text-slate-400 mt-1">Listed Properties</div>
+            <div class="text-[10px] text-slate-500">Houses, Flats & Portions</div>
+          </div>
+          <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 text-center">
+            <div class="text-2xl sm:text-3xl font-black text-teal-300 font-mono" id="stat-avail-props">8</div>
+            <div class="text-xs font-bold uppercase tracking-wider text-slate-400 mt-1">Available Now</div>
+            <div class="text-[10px] text-slate-500">Rented Hidden (Rule 1)</div>
+          </div>
+          <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 text-center">
+            <div class="text-2xl sm:text-3xl font-black text-amber-400 font-mono" id="stat-areas-count">9</div>
+            <div class="text-xs font-bold uppercase tracking-wider text-slate-400 mt-1">Prime Sectors</div>
+            <div class="text-[10px] text-slate-500">4 Metropolitan Cities</div>
+          </div>
+          <div class="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 text-center">
+            <div class="text-2xl sm:text-3xl font-black text-blue-400 font-mono" id="stat-visit-count">8</div>
+            <div class="text-xs font-bold uppercase tracking-wider text-slate-400 mt-1">Visit Requests</div>
+            <div class="text-[10px] text-slate-500">Verified Direct Tours</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Featured Prime Listings Section -->
+  <section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+      <div>
+        <div class="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1 font-mono">Curated Portfolio</div>
+        <h2 class="text-2xl sm:text-3xl font-black text-white">Featured Luxury Rental Listings</h2>
+        <p class="text-sm text-slate-400 mt-1">Hand-picked houses, luxury flats, and independent portions ready for move-in.</p>
+      </div>
+      <div>
+        <a href="properties.html" class="btn-secondary text-xs px-4 py-2.5 flex items-center gap-1.5 group">
+          View All Listings
+          <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Featured Properties Grid -->
+    <div id="featured-properties-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Injected via JavaScript from PropertyDB -->
+    </div>
+  </section>
+
+  <!-- City Discovery Showcase -->
+  <section class="py-16 bg-slate-900/40 border-y border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest font-mono">Metropolitan Hubs</span>
+        <h2 class="text-3xl font-black text-white mt-1">Explore Properties by City</h2>
+        <p class="text-slate-400 text-sm mt-2">Filter premium residential districts registered in our relational Areas database.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- Islamabad -->
+        <a href="properties.html?city=Islamabad" class="group relative rounded-2xl overflow-hidden border border-slate-800 hover:border-emerald-500/50 transition-all shadow-xl block h-64">
+          <img src="https://images.unsplash.com/photo-1589561084283-930aa7b1ce50?w=600&auto=format&fit=crop&q=80" alt="Islamabad" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-5 flex flex-col justify-end">
+            <span class="badge badge-available text-[10px] w-fit mb-1">Capital Federal</span>
+            <h3 class="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors">Islamabad</h3>
+            <p class="text-xs text-slate-300">F-7, E-11, DHA Phase 2</p>
+          </div>
+        </a>
+
+        <!-- Lahore -->
+        <a href="properties.html?city=Lahore" class="group relative rounded-2xl overflow-hidden border border-slate-800 hover:border-emerald-500/50 transition-all shadow-xl block h-64">
+          <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600&auto=format&fit=crop&q=80" alt="Lahore" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-5 flex flex-col justify-end">
+            <span class="badge badge-available text-[10px] w-fit mb-1">Cultural Heart</span>
+            <h3 class="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors">Lahore</h3>
+            <p class="text-xs text-slate-300">DHA Phase 5, Gulberg III, Model Town</p>
+          </div>
+        </a>
+
+        <!-- Karachi -->
+        <a href="properties.html?city=Karachi" class="group relative rounded-2xl overflow-hidden border border-slate-800 hover:border-emerald-500/50 transition-all shadow-xl block h-64">
+          <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=600&auto=format&fit=crop&q=80" alt="Karachi" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-5 flex flex-col justify-end">
+            <span class="badge badge-available text-[10px] w-fit mb-1">Coastal Megacity</span>
+            <h3 class="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors">Karachi</h3>
+            <p class="text-xs text-slate-300">Clifton Block 2, DHA Phase 6</p>
+          </div>
+        </a>
+
+        <!-- Rawalpindi -->
+        <a href="properties.html?city=Rawalpindi" class="group relative rounded-2xl overflow-hidden border border-slate-800 hover:border-emerald-500/50 transition-all shadow-xl block h-64">
+          <img src="https://images.unsplash.com/photo-1577495508048-b635879837f1?w=600&auto=format&fit=crop&q=80" alt="Rawalpindi" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-5 flex flex-col justify-end">
+            <span class="badge badge-available text-[10px] w-fit mb-1">Twin City</span>
+            <h3 class="text-xl font-bold text-white group-hover:text-emerald-400 transition-colors">Rawalpindi</h3>
+            <p class="text-xs text-slate-300">Bahria Town Phase 7</p>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works: Tenant vs Owner -->
+  <section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+    <div class="text-center max-w-2xl mx-auto mb-14">
+      <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest font-mono">Streamlined Workflow</span>
+      <h2 class="text-3xl font-black text-white mt-1">Simple, Transparent Rental Experience</h2>
+      <p class="text-slate-400 text-sm mt-2">Connecting property seekers and verified landlords with relational accountability.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      
+      <!-- Tenant Journey -->
+      <div class="glass-panel p-8 relative overflow-hidden">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xl border border-emerald-500/30">
+            🔍
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-white">For Tenants</h3>
+            <p class="text-xs text-slate-400">Find and visit your next dream rental</p>
+          </div>
+        </div>
+
+        <div class="space-y-4 text-xs text-slate-300">
+          <div class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-full bg-slate-800 text-emerald-400 flex items-center justify-center font-bold font-mono shrink-0">1</span>
+            <div>
+              <strong class="text-white block text-sm">Filter & Search</strong>
+              Search by city, area, rent range, property type, and bedroom count without seeing already rented units.
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-full bg-slate-800 text-emerald-400 flex items-center justify-center font-bold font-mono shrink-0">2</span>
+            <div>
+              <strong class="text-white block text-sm">Schedule a Visit Request</strong>
+              Pick a future date and time slot. Our database verifies you haven't booked the same property twice on the same day.
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-full bg-slate-800 text-emerald-400 flex items-center justify-center font-bold font-mono shrink-0">3</span>
+            <div>
+              <strong class="text-white block text-sm">Track Acceptance & Tour</strong>
+              Get instant notification when the owner accepts your visit request and visit the property in person.
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8">
+          <a href="properties.html" class="btn-primary text-xs w-full py-2.5">
+            Start Searching Rentals →
+          </a>
+        </div>
+      </div>
+
+      <!-- Owner Journey -->
+      <div class="glass-panel p-8 relative overflow-hidden">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-xl border border-amber-500/30">
+            🏢
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-white">For Property Owners</h3>
+            <p class="text-xs text-slate-400">List, manage visit requests, and toggle rented status</p>
+          </div>
+        </div>
+
+        <div class="space-y-4 text-xs text-slate-300">
+          <div class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-full bg-slate-800 text-amber-400 flex items-center justify-center font-bold font-mono shrink-0">1</span>
+            <div>
+              <strong class="text-white block text-sm">Publish Your Property</strong>
+              List houses, flats, or portions with size (sqft), bedroom specs, photos, and monthly rent.
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-full bg-slate-800 text-amber-400 flex items-center justify-center font-bold font-mono shrink-0">2</span>
+            <div>
+              <strong class="text-white block text-sm">Accept or Decline Visits</strong>
+              Review tenant profiles, phone numbers, and proposed visit dates with one-click decision controls.
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-full bg-slate-800 text-amber-400 flex items-center justify-center font-bold font-mono shrink-0">3</span>
+            <div>
+              <strong class="text-white block text-sm">Mark Rented & Hide from Search</strong>
+              Once leased, mark the property as 'Rented' with a single click to instantly hide it from search listings.
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-8 flex gap-3">
+          <a href="add-property.html" class="btn-gold text-xs flex-1 py-2.5 text-center justify-center">
+            List a Property
+          </a>
+          <a href="owner-dashboard.html" class="btn-secondary text-xs flex-1 py-2.5 text-center justify-center">
+            Owner Dashboard
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Relational Database Project Showcase Strip -->
+  <section class="py-12 bg-slate-900/60 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="quiz-card p-6 sm:p-8 bg-gradient-to-r from-slate-900 via-slate-900 to-emerald-950/30 border border-emerald-500/30 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-xs font-mono font-bold text-emerald-400 uppercase">Database Project 17 Compliance</span>
+          </div>
+          <h3 class="text-xl font-bold text-white">All 8 Required SQL Queries & Advanced Tasks Integrated</h3>
+          <p class="text-xs text-slate-400 max-w-2xl mt-1 leading-relaxed">
+            Includes multi-attribute search, average rent by area/bedrooms, most requested properties, owners with >2 listings, properties with no requests, owner acceptance rates, cheapest per area (correlated subquery), and composite index benchmark on (area_id, status, monthly_rent).
+          </p>
+        </div>
+        <a href="admin-areas.html" class="btn-primary text-xs py-3 px-5 whitespace-nowrap">
+          Open SQL Queries Playground →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Universal Footer -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Scripts -->
+  <script src="js/db.js"></script>
+  <script src="js/nav.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Load and render top 3 featured properties
+      const properties = window.PropertyDB.getProperties({ sort: 'newest' });
+      const grid = document.getElementById("featured-properties-grid");
+
+      // Update counters
+      const allProps = window.PropertyDB.getProperties({}, true);
+      const data = window.PropertyDB.getData();
+      document.getElementById("stat-total-props").textContent = allProps.length;
+      document.getElementById("stat-avail-props").textContent = properties.length;
+      document.getElementById("stat-areas-count").textContent = data.areas.length;
+      document.getElementById("stat-visit-count").textContent = data.visit_requests.length;
+
+      const top3 = properties.slice(0, 3);
+      grid.innerHTML = top3.map(p => `
+        <div class="estate-card">
+          <div class="property-img-wrapper">
+            <img src="${p.image}" alt="${p.title}" class="property-img">
+            <div class="price-pill">${window.formatCurrency(p.monthly_rent)}<span class="text-[11px] text-slate-300 font-normal"> / mo</span></div>
+            <div class="absolute top-3 left-3 flex gap-2">
+              <span class="badge badge-type">${p.type}</span>
+              ${p.featured ? '<span class="badge badge-featured">Featured</span>' : ''}
+            </div>
+            <div class="absolute top-3 right-3">
+              <span class="badge badge-available">${p.status}</span>
+            </div>
+          </div>
+
+          <div class="p-5 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="text-[11px] text-emerald-400 font-semibold mb-1 flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                ${p.area_name}, ${p.city}
+              </div>
+              <h3 class="text-base font-bold text-white mb-2 line-clamp-1 hover:text-emerald-400 transition-colors">
+                <a href="property-details.html?id=${p.property_id}">${p.title}</a>
+              </h3>
+              <p class="text-xs text-slate-400 line-clamp-2 mb-4">${p.description}</p>
+            </div>
+
+            <div>
+              <div class="grid grid-cols-3 gap-2 py-3 border-y border-slate-800 text-xs text-slate-300 mb-4 font-mono text-center">
+                <div>
+                  <span class="text-[10px] text-slate-500 block uppercase">Bedrooms</span>
+                  <strong>${p.bedrooms} Beds</strong>
+                </div>
+                <div>
+                  <span class="text-[10px] text-slate-500 block uppercase">Bathrooms</span>
+                  <strong>${p.bathrooms} Baths</strong>
+                </div>
+                <div>
+                  <span class="text-[10px] text-slate-500 block uppercase">Area Size</span>
+                  <strong>${p.size_sqft} sqft</strong>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <a href="property-details.html?id=${p.property_id}" class="flex-1 btn-secondary text-xs py-2 text-center">
+                  View Details
+                </a>
+                <a href="request-visit.html?id=${p.property_id}" class="btn-primary text-xs py-2 px-3">
+                  Book Visit
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    });
+
+    function handleHeroSearch(e) {
+      e.preventDefault();
+      const city = document.getElementById("hero-city-select").value;
+      const type = document.getElementById("hero-type-select").value;
+      const beds = document.getElementById("hero-beds-select").value;
+
+      const params = new URLSearchParams();
+      if (city !== "All") params.set("city", city);
+      if (type !== "All") params.set("type", type);
+      if (beds !== "All") params.set("bedrooms", beds);
+
+      window.location.href = `properties.html?${params.toString()}`;
+    }
+  </script>
+</body>
+</html>

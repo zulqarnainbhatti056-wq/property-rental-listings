@@ -1,97 +1,198 @@
-# property-rental-listings
-Modern real-estate property rental platform featuring houses, flats, and portions with interactive booking and landlord management."
-# 🏡 LuxeHaven Rentals — Property Rental Listings System
-> **BS Computer Science Database Semester Project (Project 17)**  
-> **Developed by:** **Zulqarnain Bhatti**
-
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+# Project 17: Property Rental Listings
+**Author / Student Name:** `Zulqarnain Bhatti`  
+**Folder Name:** `zulqarnain bhatti`  
+**Degree Program:** BS Computer Science (BS CS)  
+**Course:** Database Systems Semester Project  
+**Technology Stack:** HTML5, CSS3, JavaScript (Vanilla ES6+), Tailwind CSS (CDN), Chart.js, Relational In-Browser Store (`localStorage`), MySQL 8.0 DDL  
 
 ---
 
-## 📖 Overview
-**LuxeHaven Rentals** is a commercial-grade, fully responsive **9-page front-end web portal** designed for residential property rentals across major metropolitan areas (Islamabad, Lahore, Karachi, and Rawalpindi).
+## 🌟 Executive Overview (منصوبے کا تعارف)
+**LuxeHaven Rentals** is a commercial-grade, modern property rental web portal created by **Zulqarnain Bhatti** according to the official specifications of **Project 17: Property Rental Listings**.
 
-The system features multi-criteria property search, verified in-person visit scheduling, a dedicated landlord management studio, and a live execution engine for **all 8 required database SQL queries** and composite index benchmarking.
-
----
-
-## 🌟 Key Features
-- **Multi-Attribute Search & Discovery:** Filter houses, flats, and portions by City, Area, Monthly Rent, Bedroom count, and Property Type.
-- **Tenant Visit Booking Engine:** Interactive date & time slot scheduling with strict business rule validation.
-- **Owner Studio Dashboard:** Manage portfolio properties with a 1-click **"Mark Rented" / "Mark Available"** status toggle.
-- **Visit Inquiries Hub:** Landlords can accept or decline prospective tenant bookings with live acceptance rate analytics.
-- **Admin Cities & Areas Portal:** Register new sectors with candidate key `UNIQUE(city, area_name)` verification.
-- **Interactive 8 SQL Queries Runner:** Live in-browser execution with parameter controls, data tables, and CSV export.
-- **Advanced Task Benchmark:** Performance comparison of a B-Tree composite index on `(area_id, status, monthly_rent)` showing 85x+ speedup.
-- **Zero Dependencies:** Runs natively in any browser with pure HTML5, CSS3, and Vanilla JavaScript.
+Owners list houses, luxury flats, and independent portions for rent across major cities (Islamabad, Lahore, Karachi, Rawalpindi). Prospective tenants filter properties by city, area, rent range, property type, and bedroom count, and schedule physical property visits that owners can review, accept, or decline.
 
 ---
 
-## 📁 9 Interconnected Pages
-
-| # | Page File | Purpose & Capabilities |
-|---|---|---|
-| 1 | `index.html` | Hero surface, quick search, featured luxury listings, city discovery |
-| 2 | `properties.html` | Multi-filter property search (Rented properties automatically hidden) |
-| 3 | `property-details.html` | High-res gallery, specs, amenities, verified owner profile |
-| 4 | `request-visit.html` | Tenant visit scheduling form with anti-past and anti-duplicate validation |
-| 5 | `my-requests.html` | Tenant tracker for visit approvals, confirmed slots, and cancellation |
-| 6 | `owner-dashboard.html` | Landlord portfolio management with 1-click status toggling |
-| 7 | `add-property.html` | Publish new property with real-time live card preview |
-| 8 | `owner-requests.html` | Review tenant bookings with interactive Accept / Decline controls |
-| 9 | `admin-areas.html` | City/Area admin, All 8 SQL Queries Runner & Composite Index test |
+## 🚀 How to Run the Website (چلانے کا طریقہ)
+No backend server, Python, or Node.js installation is required:
+1. Open the folder:
+   `c:\Users\zulqa\OneDrive\Desktop\New folder\zulqarnain bhatti\`
+2. Double-click **`index.html`** to launch the site in **Google Chrome**, **Microsoft Edge**, or **Firefox**.
+3. Use the top navigation bar to access all **9 interconnected pages**, switch between **Tenant**, **Owner**, and **Admin** roles, book visits, mark listings as rented, and run the **8 SQL Queries** live!
 
 ---
 
-## 🗄️ Database Architecture (5 Relational Tables)
+## 📁 9 Interconnected Pages Architecture
+All source code and assets are self-contained inside `zulqarnain bhatti/`:
 
 ```text
-Areas (area_id [PK], city, area_name, UNIQUE(city, area_name))
-  └── Properties (property_id [PK], owner_id [FK], area_id [FK], type, bedrooms, size_sqft, monthly_rent, status)
-        ├── Visit_Requests (request_id [PK], property_id [FK], tenant_id [FK], visit_date, time_slot, status)
-        └── Owners (owner_id [PK], name, phone [UNIQUE], email [UNIQUE])
-Tenants (tenant_id [PK], name, phone [UNIQUE], email [UNIQUE])
+zulqarnain bhatti/
+├── index.html               # Page 1: High-End Home & Property Discovery Surface
+├── properties.html          # Page 2: Search Listings with Multi-Attribute Filters (City, Area, Rent, Beds, Type)
+├── property-details.html    # Page 3: Listing Details, Photo Gallery, Specs & Owner Contact
+├── request-visit.html       # Page 4: Tenant Schedule Visit Request Form (Rule 2 & 3 Validation)
+├── my-requests.html         # Page 5: Tenant Portal - Track Visit Approvals & Time Slots
+├── owner-dashboard.html     # Page 6: Owner Studio - Manage Listings & 1-Click "Mark Rented" Action
+├── add-property.html        # Page 7: Owner - Add New Property Listing with Live Preview
+├── owner-requests.html      # Page 8: Owner - Manage Visit Requests (Accept / Decline Actions)
+├── admin-areas.html         # Page 9: Admin - Manage Cities/Areas + All 8 SQL Queries Playground + Benchmark
+├── schema.sql               # Complete MySQL DDL Script with Constraints, Seed Data & Queries
+├── README.md                # Project Documentation & Presentation Guide
+├── css/
+│   └── style.css            # Custom Real Estate UI Design System (Emerald & Gold Accents)
+└── js/
+    ├── db.js                # Relational In-Browser Store (5 Tables, Validators, 8 Query Solvers)
+    └── nav.js               # Shared dynamic navigation, role switcher, toasts & currency helpers
 ```
 
-### 🛡️ Business Rules Enforced
-1. **Search Visibility:** Rented properties (`status = 'Rented'`) are automatically hidden from search results.
-2. **Date Integrity:** `visit_date` cannot be in the past.
-3. **Anti-Duplicate Booking:** A tenant cannot request the same property twice on the same date (`UNIQUE(property_id, tenant_id, visit_date)`).
+---
+
+## 🗄️ Relational Database Schema (5 Tables)
+
+### 1. `Areas`
+- `area_id` (INT, PK, AUTO_INCREMENT)
+- `city` (VARCHAR(80), NOT NULL)
+- `area_name` (VARCHAR(120), NOT NULL)
+- **Constraint:** `UNIQUE(city, area_name)`
+
+### 2. `Owners`
+- `owner_id` (INT, PK, AUTO_INCREMENT)
+- `name` (VARCHAR(120), NOT NULL)
+- `phone` (VARCHAR(30), NOT NULL, UNIQUE)
+- `email` (VARCHAR(120), NOT NULL, UNIQUE)
+
+### 3. `Properties`
+- `property_id` (INT, PK, AUTO_INCREMENT)
+- `owner_id` (INT, FK -> Owners.owner_id)
+- `area_id` (INT, FK -> Areas.area_id)
+- `title` (VARCHAR(200), NOT NULL)
+- `type` (ENUM('House', 'Flat', 'Portion'), CHECK constraint)
+- `bedrooms` (INT, CHECK > 0)
+- `bathrooms` (INT, CHECK >= 1)
+- `size_sqft` (INT, CHECK > 0)
+- `monthly_rent` (DECIMAL(12,2), CHECK > 0)
+- `status` (ENUM('Available', 'Rented'), CHECK constraint)
+
+### 4. `Tenants`
+- `tenant_id` (INT, PK, AUTO_INCREMENT)
+- `name` (VARCHAR(120), NOT NULL)
+- `phone` (VARCHAR(30), NOT NULL, UNIQUE)
+- `email` (VARCHAR(120), NOT NULL, UNIQUE)
+
+### 5. `Visit_Requests`
+- `request_id` (INT, PK, AUTO_INCREMENT)
+- `property_id` (INT, FK -> Properties.property_id)
+- `tenant_id` (INT, FK -> Tenants.tenant_id)
+- `visit_date` (DATE, NOT NULL)
+- `time_slot` (VARCHAR(20), NOT NULL)
+- `status` (ENUM('Pending', 'Accepted', 'Declined'), CHECK constraint)
+- **Constraint:** `UNIQUE(property_id, tenant_id, visit_date)` — Prevents same tenant requesting same property twice on identical date.
 
 ---
 
-## ⚡ The 8 Required SQL Queries Included
-
-1. **Available properties in a city within a rent range** (`JOIN` + `BETWEEN`)
-2. **Average rent per area and bedrooms** (`GROUP BY a.city, a.area_name, p.bedrooms`)
-3. **Most requested properties** (`COUNT(vr.request_id)` + `ORDER BY total_requests DESC`)
-4. **Owners with more than 2 listings** (`HAVING COUNT(p.property_id) > 2`)
-5. **Properties with no visit requests** (`LEFT JOIN ... WHERE vr.request_id IS NULL`)
-6. **Acceptance rate per owner** (`SUM(Accepted) / COUNT(requests) * 100`)
-7. **Cheapest property per area** (Correlated subquery with `MIN()`)
-8. **Listings added this month** (`WHERE MONTH(created_at) = MONTH(CURRENT_DATE())`)
+## 🛡️ Business Rules Enforced
+1. **Rented properties are hidden from search:**
+   Implemented in `PropertyDB.getProperties()` where only `status = 'Available'` properties are returned to searchers. Owners can toggle between Available and Rented with a single click in `owner-dashboard.html`.
+2. **`visit_date` cannot be in the past:**
+   Enforced in `request-visit.html` HTML min attribute and validated via JavaScript in `PropertyDB.requestVisit()`.
+3. **A tenant cannot request the same property twice on the same date:**
+   Checked automatically against `Visit_Requests` table before inserting any booking.
 
 ---
 
-## 🚀 How to Run Locally
+## ⚡ All 8 Required SQL Queries (Implemented in Frontend & `schema.sql`)
 
-1. Clone or download the repository:
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/property-rental-listings.git
+1. **Available properties in a city within a rent range:**
+   ```sql
+   SELECT p.property_id, p.title, a.city, a.area_name, p.type, p.bedrooms, p.monthly_rent
+   FROM Properties p
+   JOIN Areas a ON p.area_id = a.area_id
+   WHERE p.status = 'Available' 
+     AND a.city = 'Islamabad' 
+     AND p.monthly_rent BETWEEN 50000 AND 300000;
    ```
-2. Navigate to the project folder:
-   ```bash
-   cd property-rental-listings
+
+2. **Average rent per area and bedrooms:**
+   ```sql
+   SELECT a.city, a.area_name, p.bedrooms, 
+          ROUND(AVG(p.monthly_rent), 2) AS avg_rent,
+          COUNT(p.property_id) AS total_properties
+   FROM Properties p
+   JOIN Areas a ON p.area_id = a.area_id
+   GROUP BY a.city, a.area_name, p.bedrooms;
    ```
-3. Open `index.html` in any browser (Google Chrome, Microsoft Edge, Firefox).
+
+3. **Most requested properties:**
+   ```sql
+   SELECT p.property_id, p.title, a.area_name, a.city, p.monthly_rent,
+          COUNT(vr.request_id) AS total_requests
+   FROM Properties p
+   JOIN Areas a ON p.area_id = a.area_id
+   JOIN Visit_Requests vr ON p.property_id = vr.property_id
+   GROUP BY p.property_id, p.title, a.area_name, a.city, p.monthly_rent
+   ORDER BY total_requests DESC;
+   ```
+
+4. **Owners with more than 2 listings:**
+   ```sql
+   SELECT o.owner_id, o.name, o.phone, o.email,
+          COUNT(p.property_id) AS total_listings
+   FROM Owners o
+   JOIN Properties p ON o.owner_id = p.owner_id
+   GROUP BY o.owner_id, o.name, o.phone, o.email
+   HAVING COUNT(p.property_id) > 2;
+   ```
+
+5. **Properties with no visit requests:**
+   ```sql
+   SELECT p.property_id, p.title, a.city, a.area_name, p.type, p.monthly_rent, p.status
+   FROM Properties p
+   JOIN Areas a ON p.area_id = a.area_id
+   LEFT JOIN Visit_Requests vr ON p.property_id = vr.property_id
+   WHERE vr.request_id IS NULL;
+   ```
+
+6. **Acceptance rate per owner:**
+   ```sql
+   SELECT o.owner_id, o.name,
+          COUNT(vr.request_id) AS total_requests_received,
+          SUM(CASE WHEN vr.status = 'Accepted' THEN 1 ELSE 0 END) AS accepted_requests,
+          ROUND((SUM(CASE WHEN vr.status = 'Accepted' THEN 1 ELSE 0 END) * 100.0) / NULLIF(COUNT(vr.request_id), 0), 1) AS acceptance_rate_percent
+   FROM Owners o
+   JOIN Properties p ON o.owner_id = p.owner_id
+   JOIN Visit_Requests vr ON p.property_id = vr.property_id
+   GROUP BY o.owner_id, o.name;
+   ```
+
+7. **Cheapest property per area (correlated subquery):**
+   ```sql
+   SELECT p.property_id, a.city, a.area_name, p.title, p.type, p.bedrooms, p.monthly_rent
+   FROM Properties p
+   JOIN Areas a ON p.area_id = a.area_id
+   WHERE p.monthly_rent = (
+       SELECT MIN(p2.monthly_rent)
+       FROM Properties p2
+       WHERE p2.area_id = p.area_id
+   );
+   ```
+
+8. **Listings added this month:**
+   ```sql
+   SELECT p.property_id, p.title, a.city, a.area_name, p.type, p.monthly_rent, p.created_at
+   FROM Properties p
+   JOIN Areas a ON p.area_id = a.area_id
+   WHERE MONTH(p.created_at) = MONTH(CURRENT_DATE())
+     AND YEAR(p.created_at) = YEAR(CURRENT_DATE());
+   ```
 
 ---
 
-## 👤 Author
-- **Name:** Zulqarnain Bhatti
-- **Degree:** BS Computer Science (BS CS)
-- **Course:** Database Systems Semester Project (Project 17)
+## ⚙️ Advanced Task: Composite Index Benchmark
+**Index Definition:**
+```sql
+CREATE INDEX idx_properties_area_status_rent ON Properties(area_id, status, monthly_rent);
+```
+- **Before Index:** Evaluates `ALL` rows via Full Table Scan ($O(N)$ complexity) taking ~12.8ms.
+- **After Index:** Evaluates via B-Tree Index Range Seek ($O(\log N)$ complexity) in ~0.15ms.
+- **Performance Gain:** Over **85.3x faster execution**, demonstrated with live interactive charts on Page 9 (`admin-areas.html`).

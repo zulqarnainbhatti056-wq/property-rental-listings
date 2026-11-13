@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Visit Requests | LuxeHaven Rentals - Zulqarnain Bhatti</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Custom Real Estate Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-[#0b0f17] text-slate-100 flex flex-col min-h-screen">
+
+  <!-- Universal Top Navigation -->
+  <div id="navbar-placeholder"></div>
+
+  <!-- Header Banner -->
+  <div class="border-b border-slate-800 bg-slate-900/40 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <div class="inline-flex items-center gap-2 text-xs font-semibold text-amber-400 font-mono uppercase tracking-wider mb-2">
+          <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+          Owner Portal • Visit Requests Administration
+        </div>
+        <h1 class="text-3xl font-black text-white">Tenant Visit Request Inquiries</h1>
+        <p class="text-sm text-slate-400 mt-1">
+          Review prospective tenant visit bookings and execute <code class="text-emerald-400 font-mono">Accept</code> or <code class="text-rose-400 font-mono">Decline</code> actions.
+        </p>
+      </div>
+
+      <!-- Landlord Account Selector -->
+      <div class="glass-panel p-3 flex items-center gap-3">
+        <label class="text-xs text-slate-400 font-semibold font-mono">Landlord Account:</label>
+        <select id="req-owner-select" onchange="renderRequests()" class="form-input text-xs font-semibold !py-1.5 !px-3 w-56">
+          <!-- Populated via JS -->
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Layout -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full flex-1 space-y-8">
+    
+    <!-- Acceptance Rate KPI Showcase (Query 6) -->
+    <div class="glass-panel p-6 border-amber-500/20">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
+        <div>
+          <span class="badge bg-amber-500/15 text-amber-300 font-mono text-xs">Query 6 Metric</span>
+          <h2 class="text-xl font-bold text-white mt-1">Landlord Acceptance Analytics</h2>
+          <p class="text-xs text-slate-400">
+            SQL: <code class="text-amber-300 font-mono">ROUND((SUM(Accepted) * 100.0) / COUNT(request_id), 1)</code>
+          </p>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <div class="text-right">
+            <span class="text-[10px] text-slate-400 uppercase font-mono block">Acceptance Rate</span>
+            <div id="stat-acceptance-rate" class="text-3xl font-black text-emerald-400 font-mono">100%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+        <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800">
+          <span class="text-[10px] text-slate-400 uppercase font-bold block">Total Received</span>
+          <strong id="stat-total-inquiries" class="text-xl font-black text-white font-mono">0</strong>
+        </div>
+        <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800">
+          <span class="text-[10px] text-amber-400 uppercase font-bold block">Pending Decision</span>
+          <strong id="stat-pending-inquiries" class="text-xl font-black text-amber-400 font-mono">0</strong>
+        </div>
+        <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800">
+          <span class="text-[10px] text-emerald-400 uppercase font-bold block">Accepted / Confirmed</span>
+          <strong id="stat-accepted-inquiries" class="text-xl font-black text-emerald-400 font-mono">0</strong>
+        </div>
+        <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800">
+          <span class="text-[10px] text-rose-400 uppercase font-bold block">Declined / Rescheduled</span>
+          <strong id="stat-declined-inquiries" class="text-xl font-black text-rose-400 font-mono">0</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status Filters Bar -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-1">
+      <button onclick="setTabFilter('All')" class="req-tab active px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white" data-tab="All">All Requests</button>
+      <button onclick="setTabFilter('Pending')" class="req-tab px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:text-white" data-tab="Pending">🟡 Pending Action</button>
+      <button onclick="setTabFilter('Accepted')" class="req-tab px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:text-white" data-tab="Accepted">🟢 Accepted</button>
+      <button onclick="setTabFilter('Declined')" class="req-tab px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:text-white" data-tab="Declined">🔴 Declined</button>
+    </div>
+
+    <!-- Requests Cards Container -->
+    <div id="owner-requests-container" class="space-y-4">
+      <!-- Injected via JS -->
+    </div>
+
+    <!-- Empty State -->
+    <div id="no-owner-reqs" class="hidden text-center py-16 quiz-card p-8">
+      <div class="w-16 h-16 rounded-2xl bg-slate-800 text-3xl flex items-center justify-center mx-auto mb-4">📬</div>
+      <h3 class="text-lg font-bold text-white mb-1">No visit requests found</h3>
+      <p class="text-xs text-slate-400">There are no visit inquiries logged under this filter.</p>
+    </div>
+
+  </main>
+
+  <!-- Universal Footer -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Scripts -->
+  <script src="js/db.js"></script>
+  <script src="js/nav.js"></script>
+  <script>
+    let activeTab = "All";
+
+    function initOwnerDropdown() {
+      const owners = window.PropertyDB.getData().owners;
+      const select = document.getElementById("req-owner-select");
+      const activeUser = window.PropertyDB.getActiveUser();
+
+      select.innerHTML = owners.map(o => `
+        <option value="${o.owner_id}" ${activeUser.id === o.owner_id ? 'selected' : ''}>
+          ${o.name}
+        </option>
+      `).join('');
+
+      renderRequests();
+    }
+
+    function setTabFilter(tab) {
+      activeTab = tab;
+      document.querySelectorAll(".req-tab").forEach(btn => {
+        if (btn.getAttribute("data-tab") === tab) {
+          btn.className = "req-tab active px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white";
+        } else {
+          btn.className = "req-tab px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:text-white";
+        }
+      });
+      renderRequests();
+    }
+
+    function renderRequests() {
+      const ownerId = Number(document.getElementById("req-owner-select").value);
+      const allForOwner = window.PropertyDB.getVisitRequests({ owner_id: ownerId });
+
+      // KPI Metrics (Query 6)
+      const total = allForOwner.length;
+      const pending = allForOwner.filter(r => r.status === 'Pending').length;
+      const accepted = allForOwner.filter(r => r.status === 'Accepted').length;
+      const declined = allForOwner.filter(r => r.status === 'Declined').length;
+      const rate = total > 0 ? ((accepted / total) * 100).toFixed(1) : 0;
+
+      document.getElementById("stat-total-inquiries").textContent = total;
+      document.getElementById("stat-pending-inquiries").textContent = pending;
+      document.getElementById("stat-accepted-inquiries").textContent = accepted;
+      document.getElementById("stat-declined-inquiries").textContent = declined;
+      document.getElementById("stat-acceptance-rate").textContent = `${rate}%`;
+
+      // Filter by activeTab
+      const filtered = activeTab === "All" ? allForOwner : allForOwner.filter(r => r.status.toLowerCase() === activeTab.toLowerCase());
+      const container = document.getElementById("owner-requests-container");
+      const emptyBox = document.getElementById("no-owner-reqs");
+
+      if (filtered.length === 0) {
+        container.innerHTML = "";
+        emptyBox.classList.remove("hidden");
+        return;
+      }
+
+      emptyBox.classList.add("hidden");
+      container.innerHTML = filtered.map(r => {
+        let badgeClass = "badge-pending";
+        if (r.status === 'Accepted') badgeClass = "badge-accepted";
+        if (r.status === 'Declined') badgeClass = "badge-declined";
+
+        const formattedDate = new Date(r.visit_date).toLocaleDateString(undefined, {
+          weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'
+        });
+
+        return `
+          <div class="estate-card p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-l-4 ${r.status === 'Accepted' ? 'border-l-emerald-500' : (r.status === 'Declined' ? 'border-l-rose-500' : 'border-l-amber-500')}">
+            <div class="flex items-start gap-4">
+              <img src="${r.tenant_avatar || 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80'}" class="w-14 h-14 rounded-2xl object-cover border border-slate-700 shrink-0">
+              <div class="space-y-1">
+                <div class="flex items-center gap-2">
+                  <span class="badge ${badgeClass} text-[10px]">${r.status}</span>
+                  <span class="text-xs text-slate-400 font-mono">Inquiry #REQ-00${r.request_id}</span>
+                </div>
+                <h3 class="text-base font-bold text-white">
+                  ${r.tenant_name}
+                </h3>
+                <div class="text-xs text-slate-300 font-mono">
+                  📞 ${r.tenant_phone} • ✉️ ${r.tenant_email}
+                </div>
+                <div class="text-xs text-emerald-400 font-medium pt-1">
+                  Property: <a href="property-details.html?id=${r.property_id}" class="hover:underline text-white font-bold">${r.property_title}</a> (${r.area_name}, ${r.city})
+                </div>
+                <div class="text-xs text-slate-300 font-mono">
+                  Requested Visit: <strong class="text-white">${formattedDate}</strong> at <strong class="text-emerald-300">${r.time_slot}</strong>
+                </div>
+                ${r.notes ? `<p class="text-xs text-slate-400 italic bg-slate-900/60 p-2 rounded-lg border border-slate-800/80 mt-2">"${r.notes}"</p>` : ''}
+              </div>
+            </div>
+
+            <!-- Landlord Decision Action Controls -->
+            <div class="flex flex-col sm:items-end gap-2.5 w-full md:w-auto border-t md:border-t-0 pt-4 md:pt-0 border-slate-800">
+              <span class="text-[10px] uppercase font-mono text-slate-500 block">Manage Booking</span>
+              
+              <div class="flex items-center gap-2">
+                <button onclick="handleDecision(${r.request_id}, 'Accepted')" class="btn-primary text-xs py-2 px-3.5 !bg-emerald-600 hover:!bg-emerald-500 shadow-emerald-600/25 ${r.status === 'Accepted' ? 'opacity-50 cursor-not-allowed' : ''}" ${r.status === 'Accepted' ? 'disabled' : ''}>
+                  ✓ Accept Visit
+                </button>
+                <button onclick="handleDecision(${r.request_id}, 'Declined')" class="btn-danger text-xs py-2 px-3.5 ${r.status === 'Declined' ? 'opacity-50 cursor-not-allowed' : ''}" ${r.status === 'Declined' ? 'disabled' : ''}>
+                  ✕ Decline
+                </button>
+              </div>
+
+              ${r.status === 'Accepted' ? `
+                <span class="text-[11px] text-emerald-400 font-semibold">✓ Confirmed with Tenant</span>
+              ` : (r.status === 'Declined' ? `
+                <span class="text-[11px] text-rose-400 font-semibold">✕ Request Declined</span>
+              ` : `
+                <span class="text-[11px] text-amber-400 font-semibold">● Pending Landlord Action</span>
+              `)}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function handleDecision(requestId, newStatus) {
+      try {
+        window.PropertyDB.updateRequestStatus(requestId, newStatus);
+        window.showToast(`Visit request #REQ-00${requestId} marked as ${newStatus}!`);
+        renderRequests();
+      } catch (err) {
+        window.showToast(err.message, 'error');
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", initOwnerDropdown);
+  </script>
+</body>
+</html>

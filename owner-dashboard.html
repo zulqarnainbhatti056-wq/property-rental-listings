@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Owner Studio Dashboard | LuxeHaven Rentals - Zulqarnain Bhatti</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Custom Real Estate Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-[#0b0f17] text-slate-100 flex flex-col min-h-screen">
+
+  <!-- Universal Top Navigation -->
+  <div id="navbar-placeholder"></div>
+
+  <!-- Header Banner -->
+  <div class="border-b border-slate-800 bg-slate-900/40 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <div class="inline-flex items-center gap-2 text-xs font-semibold text-amber-400 font-mono uppercase tracking-wider mb-2">
+          <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+          Owner Portal • Property Portfolio Management
+        </div>
+        <h1 class="text-3xl font-black text-white">Owner Studio & Listing Manager</h1>
+        <p class="text-sm text-slate-400 mt-1">
+          Add properties, review tenant inquiries, and toggle <code class="text-emerald-400 font-mono">Available</code> vs <code class="text-rose-400 font-mono">Rented</code> status.
+        </p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-3">
+        <a href="owner-requests.html" class="btn-secondary text-xs px-4 py-2.5 font-bold flex items-center gap-1.5">
+          <span>📬</span> Review Visit Requests
+        </a>
+        <a href="add-property.html" class="btn-primary text-xs px-4 py-2.5 font-bold flex items-center gap-1.5 shadow-emerald-600/30">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+          Add New Listing
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Layout -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full flex-1 space-y-8">
+    
+    <!-- Owner Selection & Portfolio KPIs -->
+    <div class="glass-panel p-6">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-4 mb-6">
+        <div class="flex items-center gap-3">
+          <img id="owner-active-avatar" src="" alt="Owner" class="w-12 h-12 rounded-xl object-cover border border-slate-700">
+          <div>
+            <div class="text-[10px] font-mono text-amber-400 uppercase font-bold">Selected Landlord Account</div>
+            <h2 id="owner-active-name" class="text-lg font-bold text-white">Landlord Name</h2>
+            <div id="owner-active-contact" class="text-xs text-slate-400 font-mono">+92 300 0000000</div>
+          </div>
+        </div>
+
+        <!-- Switch Landlord Select -->
+        <div class="flex items-center gap-2">
+          <label class="text-xs text-slate-400 font-semibold font-mono">Switch Owner:</label>
+          <select id="owner-selector" onchange="onOwnerChanged()" class="form-input text-xs font-semibold !py-1.5 !px-3 w-56">
+            <!-- Populated via JS -->
+          </select>
+        </div>
+      </div>
+
+      <!-- 4 Quick KPI Counter Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 text-center">
+          <div class="text-[10px] uppercase font-bold text-slate-400">Total Listings</div>
+          <div id="kpi-total" class="text-2xl font-black text-white font-mono mt-1">0</div>
+          <div class="text-[10px] text-slate-500 mt-0.5">Properties Table</div>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 text-center">
+          <div class="text-[10px] uppercase font-bold text-emerald-400">Available (In Search)</div>
+          <div id="kpi-available" class="text-2xl font-black text-emerald-400 font-mono mt-1">0</div>
+          <div class="text-[10px] text-slate-500 mt-0.5">Visible to Tenants</div>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 text-center">
+          <div class="text-[10px] uppercase font-bold text-rose-400">Rented (Hidden)</div>
+          <div id="kpi-rented" class="text-2xl font-black text-rose-400 font-mono mt-1">0</div>
+          <div class="text-[10px] text-slate-500 mt-0.5">Rule 1 Active</div>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 text-center">
+          <div class="text-[10px] uppercase font-bold text-amber-400">Visit Requests</div>
+          <div id="kpi-requests" class="text-2xl font-black text-amber-400 font-mono mt-1">0</div>
+          <div class="text-[10px] text-slate-500 mt-0.5" id="kpi-acceptance">0% Acceptance</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Listings Management Table -->
+    <div class="glass-panel overflow-hidden">
+      <div class="p-6 border-b border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <span>Portfolio Property Inventory</span>
+            <span class="badge badge-type text-xs" id="table-count-badge">0 Units</span>
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">
+            Click <strong class="text-emerald-400">"Toggle Rented"</strong> to instantly add or remove a property from tenant search results.
+          </p>
+        </div>
+
+        <a href="add-property.html" class="btn-primary text-xs py-2 px-3.5">
+          + Add New Property
+        </a>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="estate-table">
+          <thead>
+            <tr>
+              <th>Property Details</th>
+              <th>Type</th>
+              <th>Beds / Baths</th>
+              <th>Monthly Rent</th>
+              <th>Current Status</th>
+              <th>Visits Logged</th>
+              <th class="text-right">Action Controls</th>
+            </tr>
+          </thead>
+          <tbody id="owner-properties-table-body">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <div id="no-owner-props-msg" class="hidden text-center py-12 text-xs text-slate-400">
+        No properties listed yet under this owner account. Click "+ Add New Property" to get started!
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Universal Footer -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Scripts -->
+  <script src="js/db.js"></script>
+  <script src="js/nav.js"></script>
+  <script>
+    let activeOwnerId = 1;
+
+    function populateOwnerDropdown() {
+      const owners = window.PropertyDB.getData().owners;
+      const select = document.getElementById("owner-selector");
+      const activeUser = window.PropertyDB.getActiveUser();
+
+      if (activeUser.role === 'Owner') {
+        activeOwnerId = activeUser.id;
+      }
+
+      select.innerHTML = owners.map(o => `
+        <option value="${o.owner_id}" ${o.owner_id === activeOwnerId ? 'selected' : ''}>
+          ${o.name}
+        </option>
+      `).join('');
+
+      onOwnerChanged();
+    }
+
+    function onOwnerChanged() {
+      activeOwnerId = Number(document.getElementById("owner-selector").value);
+      const owner = window.PropertyDB.getData().owners.find(o => o.owner_id === activeOwnerId);
+      
+      if (owner) {
+        document.getElementById("owner-active-avatar").src = owner.avatar;
+        document.getElementById("owner-active-name").textContent = owner.name;
+        document.getElementById("owner-active-contact").textContent = `${owner.phone} • ${owner.email}`;
+      }
+
+      renderOwnerDashboard();
+    }
+
+    function renderOwnerDashboard() {
+      // Get all properties for this owner (including rented)
+      const allProps = window.PropertyDB.getProperties({}, true).filter(p => p.owner_id === activeOwnerId);
+      const availableProps = allProps.filter(p => p.status === 'Available');
+      const rentedProps = allProps.filter(p => p.status === 'Rented');
+      const requests = window.PropertyDB.getVisitRequests({ owner_id: activeOwnerId });
+
+      // KPI Counters
+      document.getElementById("kpi-total").textContent = allProps.length;
+      document.getElementById("kpi-available").textContent = availableProps.length;
+      document.getElementById("kpi-rented").textContent = rentedProps.length;
+      document.getElementById("kpi-requests").textContent = requests.length;
+
+      const acceptedReqs = requests.filter(r => r.status === 'Accepted').length;
+      const rate = requests.length > 0 ? ((acceptedReqs / requests.length) * 100).toFixed(0) : 0;
+      document.getElementById("kpi-acceptance").textContent = `${rate}% Acceptance Rate`;
+      document.getElementById("table-count-badge").textContent = `${allProps.length} Units`;
+
+      const tbody = document.getElementById("owner-properties-table-body");
+      const emptyMsg = document.getElementById("no-owner-props-msg");
+
+      if (allProps.length === 0) {
+        tbody.innerHTML = "";
+        emptyMsg.classList.remove("hidden");
+        return;
+      }
+
+      emptyMsg.classList.add("hidden");
+      tbody.innerHTML = allProps.map(p => {
+        const isRented = p.status === 'Rented';
+        return `
+          <tr>
+            <td>
+              <div class="flex items-center gap-3">
+                <img src="${p.image}" class="w-14 h-14 rounded-xl object-cover border border-slate-800 shrink-0">
+                <div>
+                  <div class="font-bold text-white text-sm line-clamp-1 hover:text-emerald-400">
+                    <a href="property-details.html?id=${p.property_id}">${p.title}</a>
+                  </div>
+                  <div class="text-xs text-slate-400 font-mono">📍 ${p.area_name}, ${p.city}</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="badge badge-type text-[10px]">${p.type}</span>
+            </td>
+            <td class="font-mono text-xs text-slate-300">
+              ${p.bedrooms} Beds / ${p.bathrooms} Baths
+            </td>
+            <td class="font-mono font-bold text-emerald-400 text-sm">
+              ${window.formatCurrency(p.monthly_rent)}
+            </td>
+            <td>
+              <span class="badge ${isRented ? 'badge-rented' : 'badge-available'} text-[10px]">
+                ${p.status}
+              </span>
+            </td>
+            <td class="font-mono text-xs text-slate-300">
+              <a href="owner-requests.html" class="text-emerald-400 hover:underline">
+                ${p.requests_count} Requests →
+              </a>
+            </td>
+            <td class="text-right">
+              <div class="flex items-center justify-end gap-2">
+                <!-- Toggle Status Button (Core requirement: "owner: ... mark rented") -->
+                <button onclick="toggleStatus(${p.property_id})" class="text-xs py-1.5 px-3 rounded-lg border font-semibold transition-all ${isRented ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/25' : 'bg-rose-500/15 border-rose-500/40 text-rose-300 hover:bg-rose-500/25'}">
+                  ${isRented ? '✓ Mark Available' : '🔒 Mark Rented'}
+                </button>
+                <a href="property-details.html?id=${p.property_id}" class="text-xs p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white" title="Preview">
+                  👁️
+                </a>
+                <button onclick="deleteProp(${p.property_id})" class="text-xs p-1.5 rounded-lg bg-slate-800 text-rose-400 hover:bg-rose-500 hover:text-white" title="Delete">
+                  🗑️
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function toggleStatus(id) {
+      try {
+        const updated = window.PropertyDB.togglePropertyStatus(id);
+        window.showToast(`Property status updated to: ${updated.status}! (Search visibility adjusted)`);
+        renderOwnerDashboard();
+      } catch (err) {
+        window.showToast(err.message, 'error');
+      }
+    }
+
+    function deleteProp(id) {
+      if (confirm("Are you sure you want to remove this property listing and its associated visit records?")) {
+        window.PropertyDB.deleteProperty(id);
+        window.showToast("Property listing deleted.");
+        renderOwnerDashboard();
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", populateOwnerDropdown);
+  </script>
+</body>
+</html>

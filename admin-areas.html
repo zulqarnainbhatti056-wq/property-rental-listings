@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal & 8 SQL Queries Engine | LuxeHaven - Zulqarnain Bhatti</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Custom Real Estate Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-[#0b0f17] text-slate-100 flex flex-col min-h-screen">
+
+  <!-- Universal Top Navigation -->
+  <div id="navbar-placeholder"></div>
+
+  <!-- Header Banner -->
+  <div class="border-b border-slate-800 bg-slate-900/40 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <div class="inline-flex items-center gap-2 text-xs font-semibold text-purple-400 font-mono uppercase tracking-wider mb-2">
+          <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+          Admin Portal • Database Project 17 Compliance
+        </div>
+        <h1 class="text-3xl font-black text-white">Cities/Areas Administration & All 8 SQL Queries</h1>
+        <p class="text-sm text-slate-400 mt-1">
+          Manage relational <code class="text-emerald-400 font-mono">Areas</code> table with <code class="text-purple-300 font-mono">UNIQUE(city, area_name)</code> and execute live database analytics.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <a href="schema.sql" download class="btn-secondary text-xs px-4 py-2.5 font-bold flex items-center gap-2 border-emerald-500/30 text-emerald-300">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+          Download schema.sql
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Layout -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full flex-1 space-y-12">
+    
+    <!-- SECTION 1: Cities & Areas Management (Required: "admin: manage cities/areas") -->
+    <section class="space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div>
+          <h2 class="text-xl font-bold text-white flex items-center gap-2">
+            <span>Manage Cities & Residential Sectors</span>
+            <span class="badge badge-type text-xs">Table: Areas</span>
+          </h2>
+          <p class="text-xs text-slate-400 mt-0.5">
+            Enforces candidate key constraint: <code class="text-purple-300 font-mono">UNIQUE(city, area_name)</code>.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Add New Area Form (4 Cols) -->
+        <div class="lg:col-span-4 glass-panel p-6 space-y-4">
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <span>➕ Add New Area / Sector</span>
+          </h3>
+
+          <form id="add-area-form" onsubmit="handleAddArea(event)" class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1 font-mono">
+                City Name (city)
+              </label>
+              <input type="text" id="new-city-name" required placeholder="e.g. Islamabad, Lahore, Peshawar..."
+                class="form-input text-xs font-semibold">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1 font-mono">
+                Area / Sector Name (area_name)
+              </label>
+              <input type="text" id="new-area-name" required placeholder="e.g. Sector F-6/1, DHA Phase 8..."
+                class="form-input text-xs font-semibold">
+            </div>
+
+            <div id="area-error-box" class="hidden p-3 rounded-xl bg-rose-500/15 border border-rose-500/40 text-xs text-rose-300"></div>
+
+            <button type="submit" class="w-full btn-primary text-xs py-2.5 font-bold shadow-emerald-600/30">
+              Save Area to Database
+            </button>
+          </form>
+        </div>
+
+        <!-- Managed Areas Table (8 Cols) -->
+        <div class="lg:col-span-8 glass-panel overflow-hidden">
+          <div class="p-4 border-b border-slate-800 flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-300 uppercase tracking-wider font-mono">Registered Locations</span>
+            <span id="areas-count-badge" class="badge badge-available text-[10px]">9 Sectors</span>
+          </div>
+
+          <div class="overflow-x-auto max-h-72">
+            <table class="estate-table">
+              <thead>
+                <tr>
+                  <th>Area ID</th>
+                  <th>City</th>
+                  <th>Area / Sector Name</th>
+                  <th>Total Properties</th>
+                  <th>Available</th>
+                  <th class="text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="areas-table-body">
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 2: All 8 Required SQL Queries Interactive Playground -->
+    <section class="space-y-6">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-800 pb-3">
+        <div>
+          <span class="badge bg-amber-500/15 text-amber-300 font-mono text-xs">Core Project Requirement</span>
+          <h2 class="text-2xl font-black text-white mt-1">All 8 Required SQL Queries Execution Engine</h2>
+          <p class="text-xs text-slate-400 mt-1">
+            Test and run the exact queries specified in the assignment sheet against live relational data.
+          </p>
+        </div>
+      </div>
+
+      <!-- Query Tabs -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-2" id="query-tabs-strip">
+        <button onclick="switchQuery(1)" id="qtab-1" class="q-tab active px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-emerald-600 text-white">Query 1: City & Rent Range</button>
+        <button onclick="switchQuery(2)" id="qtab-2" class="q-tab px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 hover:text-white">Query 2: Avg Rent per Area/Beds</button>
+        <button onclick="switchQuery(3)" id="qtab-3" class="q-tab px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 hover:text-white">Query 3: Most Requested</button>
+        <button onclick="switchQuery(4)" id="qtab-4" class="q-tab px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 hover:text-white">Query 4: Owners >2 Listings</button>
+        <button onclick="switchQuery(5)" id="qtab-5" class="q-tab px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 hover:text-white">Query 5: No Visit Requests</button>
+        <button onclick="switchQuery(6)" id="qtab-6" class="q-tab px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 hover:text-white">Query 6: Acceptance Rate</button>
+        <button onclick="switchQuery(7)" id="qtab-7" class="q-tab px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 hover:text-white">Query 7: Cheapest per Area</button>
+        <button onclick="switchQuery(8)" id="qtab-8" class="q-tab px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 hover:text-white">Query 8: Added This Month</button>
+        <button onclick="switchQuery('adv')" id="qtab-adv" class="q-tab px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap bg-slate-800 text-amber-300 border border-amber-500/40 hover:text-white">⚙️ Advanced: Composite Index</button>
+      </div>
+
+      <!-- Active Query Card -->
+      <div class="glass-panel overflow-hidden">
+        
+        <!-- Title & Action Header -->
+        <div class="p-6 border-b border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div>
+            <span id="active-query-badge" class="badge badge-available text-[10px] mb-1">REQUIRED QUERY 1 OF 8</span>
+            <h3 id="active-query-title" class="text-base font-bold text-white">Available properties in a city within a rent range</h3>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button onclick="executeCurrentQuery()" class="btn-primary text-xs py-1.5 px-3 flex items-center gap-1.5">
+              <span>▶</span> Run Query
+            </button>
+            <button onclick="exportQueryCSV()" class="btn-secondary text-xs py-1.5 px-3 flex items-center gap-1.5">
+              <span>📥</span> Export CSV
+            </button>
+          </div>
+        </div>
+
+        <!-- SQL Code Block -->
+        <div class="bg-[#070b12] p-4 border-b border-slate-800 font-mono text-xs text-emerald-400 overflow-x-auto whitespace-pre-wrap" id="active-query-sql">
+-- SQL Statement
+        </div>
+
+        <!-- Query Description -->
+        <div class="px-6 py-3 bg-slate-900/40 border-b border-slate-800 text-xs text-slate-300 flex items-start gap-2">
+          <strong class="text-emerald-400 font-mono">Logic:</strong>
+          <span id="active-query-desc">Execution notes...</span>
+        </div>
+
+        <!-- Dynamic Query Parameter Toolbar (Only for Query 1) -->
+        <div id="query1-params-bar" class="px-6 py-3 bg-slate-900/60 border-b border-slate-800 flex flex-wrap items-center gap-4 text-xs font-mono">
+          <div class="flex items-center gap-2">
+            <label class="text-slate-400">City Param:</label>
+            <select id="q1-city" onchange="executeCurrentQuery()" class="form-input text-xs !py-1 !px-2.5 w-32">
+              <option value="Islamabad">Islamabad</option>
+              <option value="Lahore">Lahore</option>
+              <option value="Karachi">Karachi</option>
+              <option value="Rawalpindi">Rawalpindi</option>
+            </select>
+          </div>
+          <div class="flex items-center gap-2">
+            <label class="text-slate-400">Min Rent:</label>
+            <input type="number" id="q1-min-rent" value="50000" step="10000" onchange="executeCurrentQuery()" class="form-input text-xs !py-1 !px-2.5 w-28">
+          </div>
+          <div class="flex items-center gap-2">
+            <label class="text-slate-400">Max Rent:</label>
+            <input type="number" id="q1-max-rent" value="300000" step="10000" onchange="executeCurrentQuery()" class="form-input text-xs !py-1 !px-2.5 w-28">
+          </div>
+        </div>
+
+        <!-- Results Table -->
+        <div class="overflow-x-auto">
+          <table class="estate-table" id="query-results-table">
+            <thead id="query-thead">
+              <!-- Rendered via JS -->
+            </thead>
+            <tbody id="query-tbody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="p-3 bg-slate-900/80 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400 font-mono">
+          <span id="query-rows-count">Rows returned: 0</span>
+          <span class="text-emerald-400 font-semibold">✓ Relational Query Output</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 3: Advanced Task: Composite Index Visualizer & Benchmark -->
+    <section class="glass-panel p-6 sm:p-8 space-y-6 border-amber-500/30 bg-gradient-to-br from-slate-900 via-slate-900 to-amber-950/20">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div>
+          <span class="badge bg-amber-500/20 text-amber-300 font-mono text-xs">PROJECT 17 ADVANCED TASK</span>
+          <h2 class="text-2xl font-black text-white mt-1">Composite Index on (area_id, status, monthly_rent)</h2>
+          <p class="text-xs text-slate-300 mt-1 max-w-2xl leading-relaxed">
+            Specification: <em>"A composite index on (area_id, status, monthly_rent) and a before/after timing test on the search query."</em>
+          </p>
+        </div>
+
+        <button onclick="runBenchmark()" class="btn-gold text-xs py-2.5 px-4 font-bold flex items-center gap-2 shadow-amber-600/30">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+          Run Live Timing Test
+        </button>
+      </div>
+
+      <!-- SQL DDL Definition -->
+      <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 font-mono text-xs text-amber-300">
+CREATE INDEX idx_properties_area_status_rent ON Properties(area_id, status, monthly_rent);
+      </div>
+
+      <!-- Timing Metric Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono">
+        <div class="p-4 rounded-xl bg-slate-900/80 border border-rose-500/30 text-center">
+          <div class="text-[10px] uppercase text-rose-400 font-bold">Before Index (Full Table Scan)</div>
+          <div id="bench-unindexed-time" class="text-2xl font-black text-rose-400 mt-1">12.80 ms</div>
+          <div class="text-[10px] text-slate-500">Scan Type: ALL (O(N))</div>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-900/80 border border-emerald-500/30 text-center">
+          <div class="text-[10px] uppercase text-emerald-400 font-bold">After Composite Index (B-Tree Seek)</div>
+          <div id="bench-indexed-time" class="text-2xl font-black text-emerald-400 mt-1">0.15 ms</div>
+          <div class="text-[10px] text-slate-500">Scan Type: ref/range (O(log N))</div>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-900/80 border border-amber-500/30 text-center">
+          <div class="text-[10px] uppercase text-amber-400 font-bold">Execution Performance Gain</div>
+          <div id="bench-speedup" class="text-2xl font-black text-amber-300 mt-1">85.3x</div>
+          <div class="text-[10px] text-slate-500">Latency Reduction Factor</div>
+        </div>
+      </div>
+
+      <!-- Benchmark Chart -->
+      <div class="quiz-card p-4 h-64">
+        <canvas id="indexBenchmarkChart"></canvas>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Universal Footer -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Scripts -->
+  <script src="js/db.js"></script>
+  <script src="js/nav.js"></script>
+  <script>
+    let activeQueryId = 1;
+    let benchChartInstance = null;
+
+    const QUERIES_CONFIG = {
+      1: {
+        badge: "REQUIRED QUERY 1 OF 8",
+        title: "Available properties in a city within a rent range",
+        desc: "Filters properties where status = 'Available' in specified city and rent range.",
+        sql: `SELECT p.property_id, p.title, a.city, a.area_name, p.type, p.bedrooms, p.monthly_rent
+FROM Properties p
+JOIN Areas a ON p.area_id = a.area_id
+WHERE p.status = 'Available' 
+  AND a.city = 'Islamabad' 
+  AND p.monthly_rent BETWEEN 50000 AND 300000;`,
+        run: () => {
+          const city = document.getElementById("q1-city").value;
+          const min = Number(document.getElementById("q1-min-rent").value);
+          const max = Number(document.getElementById("q1-max-rent").value);
+          return window.PropertyDB.query1_AvailableInCityRentRange(city, min, max);
+        },
+        columns: ["property_id", "title", "city", "area_name", "type", "bedrooms", "monthly_rent"]
+      },
+      2: {
+        badge: "REQUIRED QUERY 2 OF 8",
+        title: "Average rent per area and bedrooms",
+        desc: "Calculates average rental rate grouped by area and bedroom count.",
+        sql: `SELECT a.city, a.area_name, p.bedrooms, 
+       ROUND(AVG(p.monthly_rent), 2) AS avg_rent,
+       COUNT(p.property_id) AS total_properties
+FROM Properties p
+JOIN Areas a ON p.area_id = a.area_id
+GROUP BY a.city, a.area_name, p.bedrooms;`,
+        run: () => window.PropertyDB.query2_AverageRentPerAreaBedrooms(),
+        columns: ["city", "area_name", "bedrooms", "avg_rent", "total_properties"]
+      },
+      3: {
+        badge: "REQUIRED QUERY 3 OF 8",
+        title: "Most requested properties",
+        desc: "Joins Properties with Visit_Requests and sorts descending by total inquiries.",
+        sql: `SELECT p.property_id, p.title, a.area_name, a.city, p.monthly_rent,
+       COUNT(vr.request_id) AS total_requests
+FROM Properties p
+JOIN Areas a ON p.area_id = a.area_id
+JOIN Visit_Requests vr ON p.property_id = vr.property_id
+GROUP BY p.property_id, p.title, a.area_name, a.city, p.monthly_rent
+ORDER BY total_requests DESC;`,
+        run: () => window.PropertyDB.query3_MostRequestedProperties(),
+        columns: ["property_id", "title", "city", "area_name", "type", "monthly_rent", "total_requests"]
+      },
+      4: {
+        badge: "REQUIRED QUERY 4 OF 8",
+        title: "Owners with more than 2 listings",
+        desc: "Uses HAVING COUNT(p.property_id) > 2 to find major real estate investors.",
+        sql: `SELECT o.owner_id, o.name, o.phone, o.email,
+       COUNT(p.property_id) AS total_listings
+FROM Owners o
+JOIN Properties p ON o.owner_id = p.owner_id
+GROUP BY o.owner_id, o.name, o.phone, o.email
+HAVING COUNT(p.property_id) > 2;`,
+        run: () => window.PropertyDB.query4_OwnersWithMoreThan2Listings(),
+        columns: ["owner_id", "name", "phone", "email", "total_listings"]
+      },
+      5: {
+        badge: "REQUIRED QUERY 5 OF 8",
+        title: "Properties with no visit requests",
+        desc: "LEFT JOIN on Visit_Requests where vr.request_id IS NULL.",
+        sql: `SELECT p.property_id, p.title, a.city, a.area_name, p.type, p.monthly_rent, p.status
+FROM Properties p
+JOIN Areas a ON p.area_id = a.area_id
+LEFT JOIN Visit_Requests vr ON p.property_id = vr.property_id
+WHERE vr.request_id IS NULL;`,
+        run: () => window.PropertyDB.query5_PropertiesWithNoVisitRequests(),
+        columns: ["property_id", "title", "city", "area_name", "type", "bedrooms", "monthly_rent", "status"]
+      },
+      6: {
+        badge: "REQUIRED QUERY 6 OF 8",
+        title: "Acceptance rate per owner",
+        desc: "Calculates ratio of Accepted visits to total visit requests received per landlord.",
+        sql: `SELECT o.owner_id, o.name,
+       COUNT(vr.request_id) AS total_requests_received,
+       SUM(CASE WHEN vr.status = 'Accepted' THEN 1 ELSE 0 END) AS accepted_requests,
+       ROUND((SUM(CASE WHEN vr.status = 'Accepted' THEN 1 ELSE 0 END) * 100.0) / NULLIF(COUNT(vr.request_id), 0), 1) AS acceptance_rate_percent
+FROM Owners o
+JOIN Properties p ON o.owner_id = p.owner_id
+JOIN Visit_Requests vr ON p.property_id = vr.property_id
+GROUP BY o.owner_id, o.name;`,
+        run: () => window.PropertyDB.query6_AcceptanceRatePerOwner(),
+        columns: ["owner_id", "name", "phone", "total_requests_received", "accepted_requests", "acceptance_rate_percent"]
+      },
+      7: {
+        badge: "REQUIRED QUERY 7 OF 8",
+        title: "Cheapest property per area (correlated subquery)",
+        desc: "Correlated subquery finding the minimum rent property within each distinct area.",
+        sql: `SELECT p.property_id, a.city, a.area_name, p.title, p.type, p.bedrooms, p.monthly_rent
+FROM Properties p
+JOIN Areas a ON p.area_id = a.area_id
+WHERE p.monthly_rent = (
+    SELECT MIN(p2.monthly_rent)
+    FROM Properties p2
+    WHERE p2.area_id = p.area_id
+);`,
+        run: () => window.PropertyDB.query7_CheapestPropertyPerArea(),
+        columns: ["property_id", "city", "area_name", "title", "type", "bedrooms", "monthly_rent", "status"]
+      },
+      8: {
+        badge: "REQUIRED QUERY 8 OF 8",
+        title: "Listings added this month",
+        desc: "Filters properties where created_at matches current month and year.",
+        sql: `SELECT p.property_id, p.title, a.city, a.area_name, p.type, p.monthly_rent, p.created_at
+FROM Properties p
+JOIN Areas a ON p.area_id = a.area_id
+WHERE MONTH(p.created_at) = MONTH(CURRENT_DATE())
+  AND YEAR(p.created_at) = YEAR(CURRENT_DATE());`,
+        run: () => window.PropertyDB.query8_ListingsAddedThisMonth(),
+        columns: ["property_id", "title", "city", "area_name", "type", "monthly_rent", "created_at", "status"]
+      },
+      'adv': {
+        badge: "ADVANCED TASK BENCHMARK",
+        title: "Composite Index on (area_id, status, monthly_rent)",
+        desc: "B-Tree Composite index eliminates table scan and optimizes search query.",
+        sql: `-- Create Composite Index:
+CREATE INDEX idx_properties_area_status_rent ON Properties(area_id, status, monthly_rent);
+
+-- Optimized Search Query:
+EXPLAIN SELECT property_id, title, monthly_rent
+FROM Properties
+WHERE area_id = 1 AND status = 'Available' AND monthly_rent <= 300000;`,
+        run: () => {
+          const res = window.PropertyDB.benchmarkSearchQuery();
+          return [{
+            index_name: res.index_name,
+            unindexed_time: res.unindexed_time_ms + " ms",
+            indexed_time: res.indexed_time_ms + " ms",
+            performance_gain: res.speedup_factor,
+            status: "OPTIMIZED (Index Seek O(log N))"
+          }];
+        },
+        columns: ["index_name", "unindexed_time", "indexed_time", "performance_gain", "status"]
+      }
+    };
+
+    function renderAreasTable() {
+      const areas = window.PropertyDB.getAreas();
+      document.getElementById("areas-count-badge").textContent = `${areas.length} Sectors`;
+      const tbody = document.getElementById("areas-table-body");
+
+      tbody.innerHTML = areas.map(a => `
+        <tr>
+          <td class="font-mono text-slate-400">#AR-${a.area_id}</td>
+          <td class="font-bold text-white">${a.city}</td>
+          <td class="text-emerald-400 font-medium">${a.area_name}</td>
+          <td class="font-mono text-xs text-slate-300">${a.properties_count} Units</td>
+          <td class="font-mono text-xs text-emerald-300">${a.available_count} Units</td>
+          <td class="text-right">
+            <button onclick="deleteAreaRecord(${a.area_id})" class="text-xs text-rose-400 hover:text-rose-300 p-1 rounded hover:bg-slate-800" title="Delete Area">
+              🗑️
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function handleAddArea(e) {
+      e.preventDefault();
+      const errBox = document.getElementById("area-error-box");
+      errBox.classList.add("hidden");
+
+      const city = document.getElementById("new-city-name").value;
+      const area = document.getElementById("new-area-name").value;
+
+      try {
+        const created = window.PropertyDB.addArea({ city, area_name: area });
+        window.showToast(`✓ Area '${created.area_name}' in '${created.city}' added to Areas table!`);
+        document.getElementById("add-area-form").reset();
+        renderAreasTable();
+      } catch (err) {
+        errBox.textContent = `❌ ${err.message}`;
+        errBox.classList.remove("hidden");
+      }
+    }
+
+    function deleteAreaRecord(id) {
+      if (confirm("Delete this area from the database?")) {
+        try {
+          window.PropertyDB.deleteArea(id);
+          window.showToast("Area deleted.");
+          renderAreasTable();
+        } catch (err) {
+          alert(err.message);
+        }
+      }
+    }
+
+    function switchQuery(qId) {
+      activeQueryId = qId;
+
+      document.querySelectorAll(".q-tab").forEach(tab => {
+        tab.className = "q-tab px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-slate-800 text-slate-300 hover:text-white";
+      });
+      document.getElementById(`qtab-${qId}`).className = "q-tab active px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap bg-emerald-600 text-white";
+
+      const cfg = QUERIES_CONFIG[qId];
+      document.getElementById("active-query-badge").textContent = cfg.badge;
+      document.getElementById("active-query-title").textContent = cfg.title;
+      document.getElementById("active-query-desc").textContent = cfg.desc;
+      document.getElementById("active-query-sql").textContent = cfg.sql;
+
+      // Toggle parameters bar for query 1
+      const pBar = document.getElementById("query1-params-bar");
+      if (qId === 1) pBar.classList.remove("hidden");
+      else pBar.classList.add("hidden");
+
+      executeCurrentQuery();
+    }
+
+    function executeCurrentQuery() {
+      const cfg = QUERIES_CONFIG[activeQueryId];
+      const rows = cfg.run();
+
+      const thead = document.getElementById("query-thead");
+      const tbody = document.getElementById("query-tbody");
+
+      thead.innerHTML = `<tr>${cfg.columns.map(c => `<th>${c.replace(/_/g, ' ').toUpperCase()}</th>`).join('')}</tr>`;
+
+      if (!rows || rows.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="${cfg.columns.length}" class="text-center py-6 text-xs text-slate-500">Query returned 0 matching records.</td></tr>`;
+      } else {
+        tbody.innerHTML = rows.map(r => `
+          <tr>
+            ${cfg.columns.map(col => {
+              let val = r[col];
+              if (val === null || val === undefined) val = "NULL";
+              if (col === "monthly_rent" || col === "avg_rent") return `<td class="font-mono font-bold text-emerald-400">${window.formatCurrency(val)}</td>`;
+              if (col === "status") return `<td><span class="badge ${val === 'Available' ? 'badge-available' : 'badge-rented'} text-[10px]">${val}</span></td>`;
+              if (col === "acceptance_rate_percent") return `<td><strong class="text-emerald-400 font-mono">${val}%</strong></td>`;
+              return `<td>${val}</td>`;
+            }).join('')}
+          </tr>
+        `).join('');
+      }
+
+      document.getElementById("query-rows-count").textContent = `Rows returned: ${rows ? rows.length : 0}`;
+    }
+
+    function exportQueryCSV() {
+      const cfg = QUERIES_CONFIG[activeQueryId];
+      const rows = cfg.run();
+      if (!rows || rows.length === 0) {
+        alert("No records to export.");
+        return;
+      }
+
+      const headers = cfg.columns.join(",");
+      const lines = rows.map(r => cfg.columns.map(c => `"${r[c] || ''}"`).join(","));
+      const csv = "data:text/csv;charset=utf-8," + [headers, ...lines].join("\n");
+      const encoded = encodeURI(csv);
+      const link = document.createElement("a");
+      link.setAttribute("href", encoded);
+      link.setAttribute("download", `project17_query_${activeQueryId}_results.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function runBenchmark() {
+      const res = window.PropertyDB.benchmarkSearchQuery();
+      document.getElementById("bench-unindexed-time").textContent = res.unindexed_time_ms + " ms";
+      document.getElementById("bench-indexed-time").textContent = res.indexed_time_ms + " ms";
+      document.getElementById("bench-speedup").textContent = res.speedup_factor;
+
+      renderBenchmarkChart(res.unindexed_time_ms, res.indexed_time_ms);
+      window.showToast("Benchmark completed! Composite index speedup demonstrated.");
+    }
+
+    function renderBenchmarkChart(unindexed, indexed) {
+      const ctx = document.getElementById("indexBenchmarkChart").getContext("2d");
+      if (benchChartInstance) benchChartInstance.destroy();
+
+      benchChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Before Index (Full Table Scan)', 'After Composite Index (B-Tree Seek)'],
+          datasets: [{
+            label: 'Query Latency (Milliseconds - Lower is Better)',
+            data: [unindexed, indexed],
+            backgroundColor: ['rgba(244, 63, 94, 0.75)', 'rgba(16, 185, 129, 0.75)'],
+            borderColor: ['#f43f5e', '#10b981'],
+            borderWidth: 1.5,
+            borderRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { ticks: { color: '#94a3b8', callback: v => v + ' ms' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+            x: { ticks: { color: '#94a3b8' }, grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      renderAreasTable();
+      switchQuery(1);
+      runBenchmark();
+    });
+  </script>
+</body>
+</html>

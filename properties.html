@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Rental Listings | LuxeHaven Rentals - Zulqarnain Bhatti</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Custom Real Estate Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-[#0b0f17] text-slate-100 flex flex-col min-h-screen">
+
+  <!-- Universal Top Navigation -->
+  <div id="navbar-placeholder"></div>
+
+  <!-- Page Header -->
+  <div class="border-b border-slate-800 bg-slate-900/40 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 text-xs font-semibold text-emerald-400 font-mono uppercase tracking-wider mb-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            Project 17 Search Engine
+          </div>
+          <h1 class="text-3xl font-black text-white">Explore Verified Rental Listings</h1>
+          <p class="text-sm text-slate-400 mt-1">
+            Enforced Business Rule: <span class="text-emerald-400 font-semibold">Rented properties are automatically excluded</span> from active search.
+          </p>
+        </div>
+
+        <!-- Quick Switch for Rented Filter Demo -->
+        <div class="glass-panel p-3 flex items-center gap-3">
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="toggle-include-rented" class="sr-only peer" onchange="applyFilters()">
+            <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-600"></div>
+            <span class="ml-2 text-xs text-slate-300 font-medium">Include Rented (Admin/Audit Mode)</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Search & Filter Interface -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full flex-1">
+    
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- Left: Comprehensive Filters Sidebar (4 Cols) -->
+      <aside class="lg:col-span-4 glass-panel p-6 space-y-6 sticky top-24">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <h2 class="text-base font-bold text-white flex items-center gap-2">
+            <span>Filter Properties</span>
+          </h2>
+          <button onclick="resetFilters()" class="text-xs text-emerald-400 hover:underline font-semibold">
+            Reset Filters
+          </button>
+        </div>
+
+        <!-- Keyword Search -->
+        <div>
+          <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5 font-mono">Keyword Search</label>
+          <div class="relative">
+            <input type="text" id="filter-keyword" placeholder="e.g. F-7, Goldcrest, Villa, Penthouse..." oninput="applyFilters()"
+              class="form-input text-xs pl-9">
+            <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          </div>
+        </div>
+
+        <!-- City Dropdown -->
+        <div>
+          <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5 font-mono">Select City</label>
+          <select id="filter-city" onchange="onCityChanged()" class="form-input text-xs font-semibold">
+            <option value="All">All Cities</option>
+            <!-- Populated via JS -->
+          </select>
+        </div>
+
+        <!-- Area Dropdown (Dynamic) -->
+        <div>
+          <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5 font-mono">Residential Area / Sector</label>
+          <select id="filter-area" onchange="applyFilters()" class="form-input text-xs font-semibold">
+            <option value="All">All Areas in Selected City</option>
+            <!-- Populated via JS -->
+          </select>
+        </div>
+
+        <!-- Property Type Pills -->
+        <div>
+          <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 font-mono">Property Type (type)</label>
+          <div class="grid grid-cols-2 gap-2" id="type-pills-container">
+            <button type="button" class="type-pill active px-3 py-2 rounded-xl text-xs font-semibold border border-emerald-500 bg-emerald-500/20 text-emerald-300" data-type="All" onclick="selectType('All')">All Types</button>
+            <button type="button" class="type-pill px-3 py-2 rounded-xl text-xs font-semibold border border-slate-700 bg-slate-800 text-slate-300 hover:text-white" data-type="House" onclick="selectType('House')">🏡 House</button>
+            <button type="button" class="type-pill px-3 py-2 rounded-xl text-xs font-semibold border border-slate-700 bg-slate-800 text-slate-300 hover:text-white" data-type="Flat" onclick="selectType('Flat')">🏢 Flat</button>
+            <button type="button" class="type-pill px-3 py-2 rounded-xl text-xs font-semibold border border-slate-700 bg-slate-800 text-slate-300 hover:text-white" data-type="Portion" onclick="selectType('Portion')">🚪 Portion</button>
+          </div>
+        </div>
+
+        <!-- Bedrooms Selection -->
+        <div>
+          <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 font-mono">Bedrooms (min)</label>
+          <div class="flex items-center gap-2 overflow-x-auto pb-1" id="bedroom-pills">
+            <button type="button" class="bed-pill active w-9 h-9 rounded-xl text-xs font-bold border border-emerald-500 bg-emerald-500/20 text-emerald-300" data-bed="All" onclick="selectBedrooms('All')">Any</button>
+            <button type="button" class="bed-pill w-9 h-9 rounded-xl text-xs font-bold border border-slate-700 bg-slate-800 text-slate-300" data-bed="2" onclick="selectBedrooms('2')">2+</button>
+            <button type="button" class="bed-pill w-9 h-9 rounded-xl text-xs font-bold border border-slate-700 bg-slate-800 text-slate-300" data-bed="3" onclick="selectBedrooms('3')">3+</button>
+            <button type="button" class="bed-pill w-9 h-9 rounded-xl text-xs font-bold border border-slate-700 bg-slate-800 text-slate-300" data-bed="4" onclick="selectBedrooms('4')">4+</button>
+            <button type="button" class="bed-pill w-9 h-9 rounded-xl text-xs font-bold border border-slate-700 bg-slate-800 text-slate-300" data-bed="5" onclick="selectBedrooms('5')">5+</button>
+          </div>
+        </div>
+
+        <!-- Monthly Rent Range -->
+        <div>
+          <div class="flex justify-between items-center mb-1.5">
+            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider font-mono">Max Rent / Month</label>
+            <span id="rent-value-label" class="text-xs font-mono font-bold text-emerald-400">Rs. 350,000</span>
+          </div>
+          <input type="range" id="filter-max-rent" min="40000" max="350000" step="10000" value="350000" 
+            oninput="onRentSliderChange(this.value)" class="w-full accent-emerald-500 cursor-pointer">
+          <div class="flex justify-between text-[10px] text-slate-500 font-mono mt-1">
+            <span>Rs. 40k</span>
+            <span>Rs. 180k</span>
+            <span>Rs. 350k+</span>
+          </div>
+        </div>
+
+      </aside>
+
+      <!-- Right: Search Results & Sorting (8 Cols) -->
+      <section class="lg:col-span-8 space-y-6">
+        
+        <!-- Results Bar: Count & Sort Dropdown -->
+        <div class="glass-panel p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <span id="results-count-badge" class="text-sm font-bold text-white">Loading properties...</span>
+            <div class="text-[11px] text-slate-400">Matching criteria from relational store</div>
+          </div>
+
+          <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+            <label class="text-xs text-slate-400 font-semibold font-mono">Sort By:</label>
+            <select id="filter-sort" onchange="applyFilters()" class="form-input text-xs font-semibold !py-1.5 !px-3 w-44">
+              <option value="newest">Newest Listed</option>
+              <option value="price_asc">Rent: Low to High</option>
+              <option value="price_desc">Rent: High to Low</option>
+              <option value="size_desc">Size: Largest First</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Properties Grid -->
+        <div id="properties-results-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Rendered via JS -->
+        </div>
+
+        <!-- Empty State (Hidden by default) -->
+        <div id="no-results-box" class="hidden text-center py-16 quiz-card p-8">
+          <div class="w-16 h-16 rounded-2xl bg-slate-800 text-3xl flex items-center justify-center mx-auto mb-4">🔍</div>
+          <h3 class="text-lg font-bold text-white mb-1">No matching properties found</h3>
+          <p class="text-xs text-slate-400 mb-6">Try expanding your budget range, changing the selected city, or resetting filters.</p>
+          <button onclick="resetFilters()" class="btn-primary text-xs">Reset All Filters</button>
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- Universal Footer -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Scripts -->
+  <script src="js/db.js"></script>
+  <script src="js/nav.js"></script>
+  <script>
+    let activeType = "All";
+    let activeBedrooms = "All";
+
+    function populateFilterDropdowns() {
+      const cities = window.PropertyDB.getCities();
+      const citySelect = document.getElementById("filter-city");
+
+      // Check URL search parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlCity = urlParams.get("city");
+      const urlType = urlParams.get("type");
+      const urlBeds = urlParams.get("bedrooms");
+
+      cities.forEach(c => {
+        const opt = document.createElement("option");
+        opt.value = c;
+        opt.textContent = c;
+        if (urlCity && urlCity.toLowerCase() === c.toLowerCase()) opt.selected = true;
+        citySelect.appendChild(opt);
+      });
+
+      if (urlType) {
+        selectType(urlType);
+      }
+      if (urlBeds) {
+        selectBedrooms(urlBeds);
+      }
+
+      onCityChanged();
+    }
+
+    function onCityChanged() {
+      const selectedCity = document.getElementById("filter-city").value;
+      const areaSelect = document.getElementById("filter-area");
+      const areas = window.PropertyDB.getAreas();
+
+      areaSelect.innerHTML = `<option value="All">All Areas in Selected City</option>`;
+
+      const filteredAreas = selectedCity === "All" ? areas : areas.filter(a => a.city.toLowerCase() === selectedCity.toLowerCase());
+      filteredAreas.forEach(a => {
+        const opt = document.createElement("option");
+        opt.value = a.area_id;
+        opt.textContent = `${a.area_name} (${a.available_count} Available)`;
+        areaSelect.appendChild(opt);
+      });
+
+      applyFilters();
+    }
+
+    function selectType(t) {
+      activeType = t;
+      document.querySelectorAll(".type-pill").forEach(p => {
+        if (p.getAttribute("data-type") === t) {
+          p.className = "type-pill active px-3 py-2 rounded-xl text-xs font-semibold border border-emerald-500 bg-emerald-500/20 text-emerald-300";
+        } else {
+          p.className = "type-pill px-3 py-2 rounded-xl text-xs font-semibold border border-slate-700 bg-slate-800 text-slate-300 hover:text-white";
+        }
+      });
+      applyFilters();
+    }
+
+    function selectBedrooms(b) {
+      activeBedrooms = b;
+      document.querySelectorAll(".bed-pill").forEach(p => {
+        if (p.getAttribute("data-bed") === b) {
+          p.className = "bed-pill active w-9 h-9 rounded-xl text-xs font-bold border border-emerald-500 bg-emerald-500/20 text-emerald-300";
+        } else {
+          p.className = "bed-pill w-9 h-9 rounded-xl text-xs font-bold border border-slate-700 bg-slate-800 text-slate-300";
+        }
+      });
+      applyFilters();
+    }
+
+    function onRentSliderChange(val) {
+      document.getElementById("rent-value-label").textContent = window.formatCurrency(val);
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const city = document.getElementById("filter-city").value;
+      const areaId = document.getElementById("filter-area").value;
+      const maxRent = document.getElementById("filter-max-rent").value;
+      const keyword = document.getElementById("filter-keyword").value;
+      const sort = document.getElementById("filter-sort").value;
+      const includeRented = document.getElementById("toggle-include-rented").checked;
+
+      const filters = {
+        city: city,
+        area_id: areaId,
+        type: activeType,
+        bedrooms: activeBedrooms,
+        max_rent: maxRent,
+        keyword: keyword,
+        sort: sort
+      };
+
+      const results = window.PropertyDB.getProperties(filters, includeRented);
+      renderResults(results);
+    }
+
+    function renderResults(properties) {
+      const grid = document.getElementById("properties-results-grid");
+      const noResults = document.getElementById("no-results-box");
+      const countBadge = document.getElementById("results-count-badge");
+
+      countBadge.textContent = `${properties.length} Properties Available for Rent`;
+
+      if (properties.length === 0) {
+        grid.innerHTML = "";
+        noResults.classList.remove("hidden");
+        return;
+      }
+
+      noResults.classList.add("hidden");
+      grid.innerHTML = properties.map(p => {
+        const isRented = p.status === 'Rented';
+        return `
+          <div class="estate-card">
+            <div class="property-img-wrapper">
+              <img src="${p.image}" alt="${p.title}" class="property-img">
+              <div class="price-pill">${window.formatCurrency(p.monthly_rent)}<span class="text-[11px] text-slate-300 font-normal"> / mo</span></div>
+              <div class="absolute top-3 left-3 flex gap-2">
+                <span class="badge badge-type">${p.type}</span>
+                ${p.featured ? '<span class="badge badge-featured">Featured</span>' : ''}
+              </div>
+              <div class="absolute top-3 right-3">
+                <span class="badge ${isRented ? 'badge-rented' : 'badge-available'}">${p.status}</span>
+              </div>
+            </div>
+
+            <div class="p-5 flex-1 flex flex-col justify-between">
+              <div>
+                <div class="text-[11px] text-emerald-400 font-semibold mb-1 flex items-center gap-1">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                  ${p.area_name}, ${p.city}
+                </div>
+                <h3 class="text-base font-bold text-white mb-2 line-clamp-1 hover:text-emerald-400 transition-colors">
+                  <a href="property-details.html?id=${p.property_id}">${p.title}</a>
+                </h3>
+                <p class="text-xs text-slate-400 line-clamp-2 mb-4">${p.description}</p>
+              </div>
+
+              <div>
+                <div class="grid grid-cols-3 gap-2 py-3 border-y border-slate-800 text-xs text-slate-300 mb-4 font-mono text-center">
+                  <div>
+                    <span class="text-[10px] text-slate-500 block uppercase">Bedrooms</span>
+                    <strong>${p.bedrooms} Beds</strong>
+                  </div>
+                  <div>
+                    <span class="text-[10px] text-slate-500 block uppercase">Bathrooms</span>
+                    <strong>${p.bathrooms} Baths</strong>
+                  </div>
+                  <div>
+                    <span class="text-[10px] text-slate-500 block uppercase">Area Size</span>
+                    <strong>${p.size_sqft} sqft</strong>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <a href="property-details.html?id=${p.property_id}" class="flex-1 btn-secondary text-xs py-2 text-center">
+                    View Details
+                  </a>
+                  ${isRented ? `
+                    <button disabled class="btn-secondary text-xs py-2 px-3 opacity-50 cursor-not-allowed">
+                      Rented
+                    </button>
+                  ` : `
+                    <a href="request-visit.html?id=${p.property_id}" class="btn-primary text-xs py-2 px-3">
+                      Book Visit
+                    </a>
+                  `}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function resetFilters() {
+      document.getElementById("filter-keyword").value = "";
+      document.getElementById("filter-city").value = "All";
+      document.getElementById("filter-max-rent").value = 350000;
+      document.getElementById("rent-value-label").textContent = "Rs. 350,000";
+      document.getElementById("toggle-include-rented").checked = false;
+      document.getElementById("filter-sort").value = "newest";
+      activeType = "All";
+      activeBedrooms = "All";
+
+      document.querySelectorAll(".type-pill").forEach((p, idx) => {
+        p.className = idx === 0 ? "type-pill active px-3 py-2 rounded-xl text-xs font-semibold border border-emerald-500 bg-emerald-500/20 text-emerald-300" : "type-pill px-3 py-2 rounded-xl text-xs font-semibold border border-slate-700 bg-slate-800 text-slate-300 hover:text-white";
+      });
+
+      document.querySelectorAll(".bed-pill").forEach((p, idx) => {
+        p.className = idx === 0 ? "bed-pill active w-9 h-9 rounded-xl text-xs font-bold border border-emerald-500 bg-emerald-500/20 text-emerald-300" : "bed-pill w-9 h-9 rounded-xl text-xs font-bold border border-slate-700 bg-slate-800 text-slate-300";
+      });
+
+      onCityChanged();
+    }
+
+    document.addEventListener("DOMContentLoaded", populateFilterDropdowns);
+  </script>
+</body>
+</html>
